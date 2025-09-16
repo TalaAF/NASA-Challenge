@@ -11,7 +11,7 @@ Each celestial body features **unique challenges** while teaching **authentic NA
 ---
 
 ## 🎮 Quick Start
-1. Open `f.html` in any modern web browser  
+1. Open `index.html` in any modern web browser  
 2. Click **"Initialize Mission"** to begin  
 3. Complete planetary minigames to unlock new areas  
 4. Face the **final quiz** after conquering the Sun  
@@ -95,4 +95,4 @@ Each celestial body features **unique challenges** while teaching **authentic NA
 ---
 
 ## 🌠 Ready to save humanity’s space knowledge?
-Open `f.html` and launch your cosmic adventure! ✨
+Open `index.html` and launch your cosmic adventure! ✨
