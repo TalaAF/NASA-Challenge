@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASA Mission: The Lost Data</title>
+    <title>NASA Mission: The Lost Files</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,9 @@
             font-family: 'Share Tech Mono', monospace;
             background: var(--terminal-bg);
             color: var(--terminal-text);
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            min-height: 100vh;
         }
         .scanlines {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -54,28 +56,167 @@
         .celestial-body { position: absolute; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
         .celestial-body:hover { transform: scale(1.2); filter: brightness(1.5); }
         .celestial-body.completed { filter: grayscale(50%) brightness(0.8); cursor: not-allowed; }
+        
+        /* Sun */
         #map-sun-base { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; background: radial-gradient(circle, #fff7a1, #f9d71c, #ff8c00); box-shadow: 0 0 60px #f9d71c, 0 0 80px orange; animation: pulse-sun 4s infinite; }
         #map-sun-interactive { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; cursor: not-allowed; border: 3px dashed rgba(255, 100, 100, 0.5); }
         #map-sun-interactive.unlocked { cursor: pointer; border: 3px solid var(--terminal-text); animation: pulse-green 2s infinite; }
-        #map-mercury { top: 50%; left: 38%; transform: translate(-50%, -50%); width: 18px; height: 18px; background: radial-gradient(circle, #d1ccc0, #b0a99f, #817b75); }
-        #map-mars { top: 48%; left: 25%; transform: translate(-50%, -50%); width: 25px; height: 25px; background: radial-gradient(circle, #ff8b8b, #ff6b6b, #c1440e); }
-        #map-jupiter { top: 55%; left: 80%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: radial-gradient(circle, #f5d6b4, #e0c097, #c6a778); }
-        #map-saturn { top: 25%; left: 90%; transform: translate(-50%, -50%); width: 45px; height: 45px; background: radial-gradient(circle, #e0cfb1, #d3b991, #b7a685); }
+        
+        /* Mercury - Closest orbit */
+        #map-mercury { top: 50%; left: 62%; transform: translate(-50%, -50%); width: 18px; height: 18px; background: radial-gradient(circle, #d1ccc0, #b0a99f, #817b75); }
+        
+        /* Venus - Second orbit */
+        #map-venus { top: 35%; left: 68%; transform: translate(-50%, -50%); width: 22px; height: 22px; background: radial-gradient(circle, #ffc649, #ffb347, #ff8c42); }
+        
+        /* Earth - Third orbit */
+        #map-earth { top: 25%; left: 75%; transform: translate(-50%, -50%); width: 24px; height: 24px; background: radial-gradient(circle, #6b93d6, #4f7942, #2f5233); }
+        #map-earth::after { content: '🌍'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; }
+        
+        /* Mars - Fourth orbit */
+        #map-mars { top: 18%; left: 82%; transform: translate(-50%, -50%); width: 25px; height: 25px; background: radial-gradient(circle, #ff8b8b, #ff6b6b, #c1440e); }
+        
+        /* Jupiter - Fifth orbit */
+        #map-jupiter { top: 50%; left: 88%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: radial-gradient(circle, #f5d6b4, #e0c097, #c6a778); }
+        #map-jupiter::before { content: ''; position: absolute; top: 35%; left: 10%; right: 10%; height: 8px; background: linear-gradient(to right, #c6a778, #d3b389, #c6a778); border-radius: 4px; }
+        #map-jupiter::after { content: ''; position: absolute; top: 55%; left: 15%; right: 15%; height: 6px; background: linear-gradient(to right, #d3b389, #c6a778, #d3b389); border-radius: 3px; }
+        
+        /* Saturn - Sixth orbit */
+        #map-saturn { top: 75%; left: 85%; transform: translate(-50%, -50%); width: 45px; height: 45px; background: radial-gradient(circle, #e0cfb1, #d3b991, #b7a685); }
         #map-saturn::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(20deg); width: 160%; height: 90%; border: 4px solid #b7a685; border-radius: 50%; box-shadow: 0 0 10px #d3b991; }
+        
+        /* Uranus - Seventh orbit */
+        #map-uranus { top: 82%; left: 65%; transform: translate(-50%, -50%); width: 35px; height: 35px; background: radial-gradient(circle, #4fd0e7, #3fb8d3, #2a9fd4); }
+        #map-uranus::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; height: 120%; border: 2px solid #3fb8d3; border-radius: 50%; opacity: 0.7; }
+        #map-uranus::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; height: 140%; border: 1px solid #3fb8d3; border-radius: 50%; opacity: 0.5; }
+        
+        /* Neptune - Outermost orbit */
+        #map-neptune { top: 75%; left: 45%; transform: translate(-50%, -50%); width: 38px; height: 38px; background: radial-gradient(circle, #4b70dd, #3a5aa0, #2d4373); }
+        #map-neptune::before { content: ''; position: absolute; top: 25%; left: 20%; right: 25%; bottom: 45%; background: linear-gradient(45deg, #5577ee, #3a5aa0); border-radius: 50%; opacity: 0.8; }
+        
+        /* Spaceship - Appears after Sun completion */
+        #map-spaceship { 
+            top: 15%; left: 15%; transform: translate(-50%, -50%); 
+            width: 50px; height: 50px; 
+            background: linear-gradient(45deg, #00ffff, #0080ff, #004080);
+            border: 3px solid var(--terminal-glow);
+            border-radius: 10px;
+            animation: pulse-spaceship 2s infinite;
+        }
+        #map-spaceship::before { 
+            content: '🚀'; 
+            position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); 
+            font-size: 24px; 
+        }
+        
+        @keyframes pulse-spaceship { 
+            0% { box-shadow: 0 0 15px var(--terminal-glow); } 
+            50% { box-shadow: 0 0 35px var(--terminal-glow), 0 0 50px rgba(0, 255, 255, 0.5); } 
+            100% { box-shadow: 0 0 15px var(--terminal-glow); } 
+        }
+        
+        /* Quiz Styling */
+        .quiz-option:hover { transform: translateY(-2px); transition: all 0.2s ease; }
+        .ordering-item:hover { transform: translateX(5px); }
+        .item-chip { transition: all 0.3s ease; }
+        .item-chip:hover { transform: scale(1.05); }
+        .match-item, .match-description { transition: all 0.2s ease; }
+        .feature-toggle { transition: all 0.3s ease; }
+        .category-zone { min-height: 120px; transition: all 0.3s ease; }
+        .category-zone:hover { border-color: var(--terminal-glow); }
+        
+        /* Scrollable Quiz Screen */
+        #spaceship-quiz-screen {
+            max-height: none;
+            overflow-y: auto;
+        }
+        
+        #quiz-container {
+            max-height: none;
+        }
+        
+        #quiz-content {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        #quiz-controls {
+            position: sticky;
+            bottom: 0;
+            background: var(--terminal-bg);
+            padding: 1rem 0;
+            margin-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
         .body-label { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); color: white; white-space: nowrap; text-shadow: 0 0 5px black; }
+
+        /* Galaxy Explorer Styles */
+        #galaxy-screen {
+            background: radial-gradient(ellipse at center, #1a0f2e 0%, #000 70%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #galaxy-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.4), transparent),
+                radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.7), transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.3;
+            animation: twinkle 8s linear infinite;
+            pointer-events: none;
+        }
+        
+        .galaxy-header {
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .galaxy-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        #exoplanet-grid > div {
+            position: relative;
+            backdrop-filter: blur(5px);
+            background: rgba(30, 30, 30, 0.9) !important;
+        }
+        
+        #exoplanet-detail {
+            position: relative;
+            z-index: 3;
+            backdrop-filter: blur(10px);
+            background: rgba(20, 20, 30, 0.95) !important;
+        }
 
         @keyframes blink { to { visibility: hidden; } }
         @keyframes scan { from { background-position: 0 0; } to { background-position: 0 -100px; } }
         @keyframes pulse-green { 0% { box-shadow: 0 0 15px var(--terminal-glow); } 50% { box-shadow: 0 0 35px var(--terminal-glow); } 100% { box-shadow: 0 0 15px var(--terminal-glow); } }
         @keyframes pulse-sun { 0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 60px #f9d71c; } 50% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 90px orange; } 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 60px #f9d71c; } }
         @keyframes screenShake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.7; } }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
+<body class="min-h-screen py-4">
     <div class="scanlines"></div>
     <canvas id="starfield-bg" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
 
-    <main id="game-container" class="w-full max-w-4xl mx-auto p-4">
+    <main id="game-container" class="w-full max-w-4xl mx-auto p-4 flex flex-col items-center justify-center min-h-screen">
         <!-- Start Screen -->
         <div id="start-screen" class="terminal-panel rounded-lg text-center">
             <h1 id="main-title" class="font-orbitron text-4xl md:text-5xl font-bold mb-4 text-center"></h1>
@@ -86,18 +227,63 @@
         <!-- Map Screen -->
         <div id="map-screen" class="hidden terminal-panel rounded-lg">
              <h2 class="font-orbitron text-3xl mb-4 text-center">Solar System Navigation</h2>
-             <p class="text-lg text-center mb-6">Recover all planetary data to unlock the final challenge at the Sun. <span id="completed-planets">0</span>/<span id="total-planets">4</span> recovered.</p>
+             <p class="text-lg text-center mb-4">Recover all planetary data to unlock the Solar Challenge, then face the Final Quiz. <span id="completed-planets">0</span>/<span id="total-planets">8</span> planets recovered.</p>
+             
+             <!-- Mission Progress Tracker -->
+             <div class="flex justify-center mb-6">
+                <div class="flex space-x-4 text-sm">
+                    <div id="stage-planets" class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-gray-600"></span>
+                        <span>8 Planets</span>
+                    </div>
+                    <div class="text-gray-500">→</div>
+                    <div id="stage-sun" class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-gray-600"></span>
+                        <span>Solar Challenge</span>
+                    </div>
+                    <div class="text-gray-500">→</div>
+                    <div id="stage-quiz" class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-gray-600"></span>
+                        <span>Final Quiz</span>
+                    </div>
+                </div>
+             </div>
+             
              <div class="solar-system-map">
-                <div class="orbit" style="width: 20%; height: 20%;"></div>
-                <div class="orbit" style="width: 40%; height: 40%;"></div>
-                <div class="orbit" style="width: 70%; height: 70%;"></div>
-                <div class="orbit" style="width: 95%; height: 95%;"></div>
+                <!-- Orbital rings -->
+                <div class="orbit" style="width: 25%; height: 25%;"></div>  <!-- Mercury -->
+                <div class="orbit" style="width: 35%; height: 35%;"></div>  <!-- Venus -->
+                <div class="orbit" style="width: 50%; height: 50%;"></div>  <!-- Earth -->
+                <div class="orbit" style="width: 65%; height: 65%;"></div>  <!-- Mars -->
+                <div class="orbit" style="width: 80%; height: 80%;"></div>  <!-- Jupiter -->
+                <div class="orbit" style="width: 90%; height: 90%;"></div>  <!-- Saturn -->
+                <div class="orbit" style="width: 95%; height: 95%;"></div>  <!-- Uranus -->
+                <div class="orbit" style="width: 98%; height: 98%;"></div>  <!-- Neptune -->
+                
+                <!-- Celestial bodies -->
                 <div id="map-sun-base" class="celestial-body !cursor-default" ></div>
                 <div id="map-sun-interactive" class="celestial-body" data-planet="sun"><span class="body-label">Sun [LOCKED]</span></div>
                 <div id="map-mercury" class="celestial-body" data-planet="mercury"><span class="body-label">Mercury</span></div>
+                <div id="map-venus" class="celestial-body" data-planet="venus"><span class="body-label">Venus</span></div>
+                <div id="map-earth" class="celestial-body" data-planet="earth"><span class="body-label">Earth</span></div>
                 <div id="map-mars" class="celestial-body" data-planet="mars"><span class="body-label">Mars</span></div>
                 <div id="map-jupiter" class="celestial-body" data-planet="jupiter"><span class="body-label">Jupiter</span></div>
                 <div id="map-saturn" class="celestial-body" data-planet="saturn"><span class="body-label">Saturn</span></div>
+                <div id="map-uranus" class="celestial-body" data-planet="uranus"><span class="body-label">Uranus</span></div>
+                <div id="map-neptune" class="celestial-body" data-planet="neptune"><span class="body-label">Neptune</span></div>
+                
+                <!-- Spaceship - appears after all planets complete -->
+                <div id="map-spaceship" class="celestial-body spaceship-quiz !cursor-default" data-planet="spaceship" style="display: none;">
+                    <span class="body-label">🚀 Final Quiz [LOCKED]</span>
+                </div>
+             </div>
+             
+             <!-- Galaxy Explorer Button -->
+             <div class="text-center mt-6">
+                <button onclick="showGalaxyScreen()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition-colors font-bold">
+                    🌌 Explore Milky Way Galaxy
+                </button>
+                <p class="text-sm text-purple-300 mt-2">Discover real exoplanets from NASA's catalog!</p>
              </div>
         </div>
         
@@ -156,6 +342,75 @@
             </div>
         </div>
 
+        <!-- Venus Minigame: Acid Cloud Survival -->
+        <div id="venus-minigame-screen" class="hidden terminal-panel rounded-lg text-center">
+            <h2 class="font-orbitron text-3xl mb-2">Venus: Acid Cloud Survival</h2>
+            <p class="text-lg mb-4">Survive the acid storm for 40 seconds. Use [SPACEBAR] to activate heat shield.</p>
+            <canvas id="venus-canvas" width="700" height="400"></canvas>
+            <div class="flex justify-between text-lg mt-2 px-4">
+                <span>Time Left: <span id="venus-timer">40</span>s</span>
+                <span>Shield Power: <span id="venus-shield">100</span>%</span>
+            </div>
+        </div>
+
+        <!-- Earth Minigame: Satellite Repair -->
+        <div id="earth-minigame-screen" class="hidden terminal-panel rounded-lg text-center">
+            <h2 class="font-orbitron text-3xl mb-2">Earth: Satellite Repair</h2>
+            <p class="text-lg mb-4">Fix 8 satellites while avoiding space debris. Use arrow keys to move.</p>
+            <canvas id="earth-canvas" width="700" height="400"></canvas>
+            <div class="flex justify-between text-lg mt-2 px-4">
+                <span>Satellites Fixed: <span id="earth-satellites">0</span>/8</span>
+                <span>Time: <span id="earth-timer">45</span>s</span>
+            </div>
+        </div>
+
+        <!-- Uranus Minigame: Ice Crystal Collection -->
+        <div id="uranus-minigame-screen" class="hidden terminal-panel rounded-lg text-center">
+            <h2 class="font-orbitron text-3xl mb-2">Uranus: Ice Crystal Collection</h2>
+            <p class="text-lg mb-4">Collect 15 ice crystals while the planet rotates. Use [A] & [D] to move.</p>
+            <canvas id="uranus-canvas" width="700" height="400"></canvas>
+            <div class="flex justify-between text-lg mt-2 px-4">
+                <span>Crystals: <span id="uranus-crystals">0</span>/15</span>
+                <span>Time: <span id="uranus-timer">50</span>s</span>
+            </div>
+        </div>
+
+        <!-- Neptune Minigame: Wind Storm Navigation -->
+        <div id="neptune-minigame-screen" class="hidden terminal-panel rounded-lg text-center">
+            <h2 class="font-orbitron text-3xl mb-2">Neptune: Wind Storm Navigation</h2>
+            <p class="text-lg mb-4">Navigate through wind currents to reach the core. Wind affects your movement!</p>
+            <canvas id="neptune-canvas" width="700" height="400"></canvas>
+            <div class="flex justify-between text-lg mt-2 px-4">
+                <span>Distance to Core: <span id="neptune-distance">100</span>%</span>
+                <span>Hull: <span id="neptune-hull">100</span>%</span>
+            </div>
+        </div>
+
+        <!-- Spaceship Final Quiz -->
+        <div id="spaceship-quiz-screen" class="hidden terminal-panel rounded-lg text-center">
+            <div class="max-h-screen overflow-y-auto">
+                <h2 class="font-orbitron text-3xl mb-4">🚀 MISSION COMMAND CENTER - FINAL ASSESSMENT</h2>
+                <p class="text-lg mb-6">All planetary data collected! Complete the comprehensive quiz to unlock mission success.</p>
+                <div id="quiz-container" class="max-w-4xl mx-auto">
+                    <div id="quiz-progress" class="mb-4 sticky top-0 bg-gray-900 p-2 rounded border border-cyan-400 z-10">
+                        <div class="flex justify-between text-lg">
+                            <span>Question <span id="current-question">1</span> of <span id="total-questions">15</span></span>
+                            <span>Score: <span id="quiz-score">0</span></span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                            <div id="progress-bar" class="bg-cyan-400 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="quiz-content" class="bg-gray-800 p-6 rounded-lg border border-cyan-400 mb-4">
+                        <!-- Quiz content will be dynamically inserted here -->
+                    </div>
+                    <div id="quiz-controls" class="flex justify-center space-x-4 sticky bottom-0 bg-gray-900 p-4 rounded border border-cyan-400">
+                        <!-- Control buttons will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Data Recovered Screen -->
         <div id="data-recovered-screen" class="hidden terminal-panel rounded-lg">
             <h2 class="font-orbitron text-3xl mb-4 text-center">DATA FRAGMENT RECOVERED</h2>
@@ -177,6 +432,63 @@
             <button id="restart-btn" class="btn-primary font-orbitron text-2xl px-12 py-4 rounded-md">Re-initialize</button>
         </div>
 
+        <!-- Galaxy Explorer Screen -->
+        <div id="galaxy-screen" class="hidden terminal-panel rounded-lg">
+            <div class="galaxy-header sticky top-0 bg-black border-b border-purple-500 pb-4 mb-4 z-10">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-3xl font-bold text-purple-400">🌌 Milky Way Galaxy Explorer</h2>
+                    <div class="flex gap-3">
+                        <a href="https://eyes.nasa.gov/apps/exo/" target="_blank" rel="noopener noreferrer" 
+                           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                            🚀 NASA Eyes on Exoplanets
+                        </a>
+                        <button onclick="showMapScreen()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            🔙 Return to Solar System
+                        </button>
+                    </div>
+                </div>
+                <div class="flex gap-4 mb-4">
+                    <input type="text" id="exoplanet-search" placeholder="Search exoplanets..." 
+                           class="flex-1 bg-gray-800 border border-purple-500 rounded px-3 py-2 text-white placeholder-gray-400"
+                           onkeyup="filterExoplanets()">
+                    <select id="exoplanet-filter" class="bg-gray-800 border border-purple-500 rounded px-3 py-2 text-white"
+                            onchange="filterExoplanets()">
+                        <option value="all">All Types</option>
+                        <option value="super-earth">Super Earth</option>
+                        <option value="gas-giant">Gas Giant</option>
+                        <option value="terrestrial">Terrestrial</option>
+                        <option value="neptune-like">Neptune-like</option>
+                    </select>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div id="galaxy-stats" class="text-purple-300 text-sm">
+                        Discovered: <span id="explored-count">0</span> / <span id="total-exoplanets">0</span> exoplanets
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        Data from <a href="https://science.nasa.gov/exoplanets/" target="_blank" rel="noopener noreferrer" 
+                                   class="text-blue-400 hover:text-blue-300 underline">NASA Exoplanet Archive</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="galaxy-content max-h-96 overflow-y-auto">
+                <div id="exoplanet-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Exoplanets will be populated here -->
+                </div>
+                
+                <!-- Detailed Exoplanet View -->
+                <div id="exoplanet-detail" class="hidden bg-gray-800 border border-purple-500 rounded-lg p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 id="detail-name" class="text-2xl font-bold text-purple-400"></h3>
+                        <button onclick="closeExoplanetDetail()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+                    </div>
+                    <div id="detail-content" class="grid md:grid-cols-2 gap-6">
+                        <!-- Content will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
          <!-- Sound Control -->
          <button id="sound-toggle" class="absolute top-4 right-4 text-white p-2 rounded-full" style="background:rgba(5, 20, 30, 0.9); border-color: var(--border-color);"><svg id="sound-on-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg><svg id="sound-off-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l-4-4m0 4l4-4" /></svg></button>
     </main>
@@ -187,11 +499,17 @@
             map: document.getElementById('map-screen'),
             sunMinigame: document.getElementById('sun-minigame-screen'),
             mercuryMinigame: document.getElementById('mercury-minigame-screen'),
+            venusMinigame: document.getElementById('venus-minigame-screen'),
+            earthMinigame: document.getElementById('earth-minigame-screen'),
             marsMinigame: document.getElementById('mars-minigame-screen'),
             jupiterMinigame: document.getElementById('jupiter-minigame-screen'),
             saturnMinigame: document.getElementById('saturn-minigame-screen'),
+            uranusMinigame: document.getElementById('uranus-minigame-screen'),
+            neptuneMinigame: document.getElementById('neptune-minigame-screen'),
+            spaceshipQuiz: document.getElementById('spaceship-quiz-screen'),
             dataRecovered: document.getElementById('data-recovered-screen'),
-            end: document.getElementById('end-screen')
+            end: document.getElementById('end-screen'),
+            galaxy: document.getElementById('galaxy-screen')
         };
         const mainTitleEl = document.getElementById('main-title');
         const startSubtitleEl = document.getElementById('start-subtitle');
@@ -214,29 +532,324 @@
              sun: {
                 name: "The Sun",
                 art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#f9d71c" /><circle cx="50" cy="50" r="40" fill="orange" /><circle cx="50" cy="50" r="35" fill="yellow" /></svg>`,
-                text: "The heart of our solar system. A nearly perfect sphere of hot plasma, its gravity holds the solar system together. You've recovered the core data and saved the network. Mission accomplished, agent."
+                text: "The heart of our solar system. A nearly perfect sphere of hot plasma, its gravity holds the solar system together. You've recovered the core data and saved the network. Mission accomplished, agent.",
+                audio: "Data core restored. Final fragment secured. Network integrity at one hundred percent. Mission accomplished."
             },
             mercury: {
-                name: "Mercury",
+                name: "🌑 Mercury",
                 art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#9d9d9d" /><circle cx="25" cy="30" r="8" fill="#7e7e7e" /><circle cx="65" cy="70" r="12" fill="#7e7e7e" /></svg>`,
-                text: "The smallest planet in our Solar System and nearest to the Sun, it has the widest temperature extremes, swinging from scorching hot to freezing cold."
+                text: "Closest planet to the Sun and the smallest planet (slightly larger than Earth's Moon). Rocky surface covered with craters. Very thin atmosphere. Extreme temperatures: very hot during day (~430°C) and very cold at night (~-180°C). No moons.",
+                audio: "Signal relay aligned. Data fragment M-14 recovered. Subject Mercury. Temperature extremes confirmed. No atmospheric protection."
+            },
+            venus: {
+                name: "🌕 Venus",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#ffc649"/><circle cx="35" cy="35" r="8" fill="#ffb347" opacity="0.7"/><circle cx="65" cy="60" r="12" fill="#ffb347" opacity="0.5"/></svg>`,
+                text: "Earth's 'twin' (similar size/mass) and 2nd planet from the Sun. Thick CO₂ atmosphere with sulfuric acid clouds causes runaway greenhouse effect. Volcanic surface hot enough to melt lead (~465°C). Spins backward (retrograde rotation). No moons.",
+                audio: "Fragment V-2 secured. Venus atmospheric data. Greenhouse effect critical. Surface temperature melts lead. Retrograde rotation confirmed."
+            },
+            earth: {
+                name: "🌍 Earth",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#6b93d6"/><path d="M20 40 Q35 30 45 35 Q55 40 65 32 Q75 38 80 45 Q70 55 60 50 Q45 52 35 48 Q25 45 20 40 Z" fill="#4f7942"/><path d="M30 65 Q40 60 50 63 Q60 66 70 70 Q65 75 55 73 Q45 70 35 72 Q30 68 30 65 Z" fill="#4f7942"/></svg>`,
+                text: "3rd planet from the Sun and the only known planet with liquid water and life. Atmosphere: Nitrogen (78%), oxygen (21%), others. Surface: 70% water, 30% land. Has 1 moon (the Moon).",
+                audio: "Earth data packet recovered. Life signatures detected. Liquid water confirmed. Oxygen atmosphere stable. Home planet data secured."
             },
             mars: {
-                name: "Mars",
+                name: "🔴 Mars",
                 art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#c1440e" /><circle cx="60" cy="65" r="10" fill="#a52a2a" /><circle cx="35" cy="55" r="5" fill="#a52a2a" /></svg>`,
-                text: "Also known as the Red Planet, its color comes from iron oxide on its surface. Home to Olympus Mons, the largest volcano in the solar system."
+                text: "4th planet from the Sun, nicknamed the 'Red Planet' (iron oxide/rust gives reddish color). Cold deserts with the largest volcano (Olympus Mons) and canyon (Valles Marineris). Thin atmosphere, mostly CO₂. 2 small moons: Phobos and Deimos. Many rovers have visited.",
+                audio: "Asteroid data packet recovered. Fragment M-A secured. Subject red planet Mars. Iron oxide surface. Olympus Mons volcanic structure confirmed."
             },
             jupiter: {
-                 name: "Jupiter",
+                 name: "🌐 Jupiter",
                  art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#e0c097" /><rect x="20" y="40" width="60" height="10" fill="#c6a778" /><rect x="25" y="60" width="50" height="8" fill="#d3b389" /></svg>`,
-                 text: "The largest planet in our Solar System. Its iconic Great Red Spot is a gigantic storm that has raged for centuries. It is a gas giant, composed primarily of hydrogen and helium."
+                 text: "5th planet and largest in the Solar System. Gas giant (mostly hydrogen & helium) with the Great Red Spot (giant storm lasting centuries). Has faint rings and 95+ moons. The Galilean moons are Io, Europa, Ganymede, and Callisto. Ganymede is the largest moon in the Solar System.",
+                 audio: "Storm data fragment secured. Subject Great Red Spot anomaly. Gas giant classification confirmed. Ninety five moons detected. Galilean satellites identified."
             },
             saturn: {
-                 name: "Saturn",
+                 name: "💠 Saturn",
                  art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="35" fill="#d3b991"/><ellipse cx="50" cy="50" rx="48" ry="15" stroke="#b7a685" stroke-width="5" fill="none" transform="rotate(-20 50 50)" /></svg>`,
-                 text: "The second-largest planet, adorned with a dazzling, complex system of icy rings. Saturn is a gas giant with an average density less than water—it would float in a large enough bathtub."
+                 text: "6th planet from the Sun, famous for its beautiful ring system (ice & rock). Gas giant composed of hydrogen and helium. Has 140+ moons, biggest is Titan (larger than Mercury, with thick atmosphere).",
+                 audio: "Ring system scan complete. Fragment S-R recovered. Composition water ice and rock particles. Titan moon atmosphere detected. Data secured."
+            },
+            uranus: {
+                name: "💨 Uranus",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#4fd0e7"/><ellipse cx="50" cy="50" rx="15" ry="48" stroke="#3fb8d3" stroke-width="3" fill="none"/><ellipse cx="50" cy="50" rx="25" ry="48" stroke="#3fb8d3" stroke-width="2" fill="none" opacity="0.6"/></svg>`,
+                text: "7th planet from the Sun with unique 98° tilt - rotates on its side! Ice giant composed of water, methane, and ammonia. Blue-green color due to methane. Has 27 known moons and faint rings.",
+                audio: "Ice giant data fragment. Ninety eight degree axial tilt confirmed. Methane atmospheric signature. Twenty seven moons catalogued. Unique rotation pattern."
+            },
+            neptune: {
+                name: "🌀 Neptune",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#4b70dd"/><path d="M25 45 Q40 35 55 45 Q70 55 75 40 Q65 65 50 60 Q35 55 25 45" fill="#3a5aa0" opacity="0.8"/><circle cx="60" cy="35" r="6" fill="#5577ee"/></svg>`,
+                text: "8th and farthest planet from the Sun. Deep blue color from methane in atmosphere. Has the fastest winds in the Solar System (up to 2,100 km/h). 14 known moons, largest is Triton (retrograde orbit). Discovered in 1846 through mathematics before being seen.",
+                audio: "Distant planet data secured. Fragment N-8 recovered. Wind velocity two thousand one hundred kilometers per hour. Triton retrograde orbit confirmed."
             }
         };
+
+        // Data for mid-game info overlays (appear during minigames)
+        const midGameData = {
+            sun: {
+                name: "☀️ The Sun",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#f9d71c" /><circle cx="50" cy="50" r="40" fill="orange" /><circle cx="50" cy="50" r="35" fill="yellow" /><circle cx="35" cy="35" r="3" fill="#ffcc00"/><circle cx="65" cy="30" r="4" fill="#ffcc00"/><circle cx="70" cy="65" r="3" fill="#ffcc00"/></svg>`,
+                fragments: [
+                    "The Sun converts 600 million tons of hydrogen into helium every second through nuclear fusion in its core!",
+                    "Solar flares can eject particles at speeds over 1 million miles per hour, creating beautiful auroras on Earth.",
+                    "The Sun's core temperature reaches 15 million°C—hot enough to instantly vaporize any known material!"
+                ]
+            },
+            mercury: {
+                name: "🌑 Mercury",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#9d9d9d" /><circle cx="25" cy="30" r="8" fill="#7e7e7e" /><circle cx="65" cy="70" r="12" fill="#7e7e7e" /></svg>`,
+                fragments: [
+                    "Mercury has mysterious bright hollows—irregular depressions where volatile elements may be escaping from the planet's surface.",
+                    "Despite its small size, Mercury has a magnetic field 1% of Earth's strength, generated by a partially molten iron core.",
+                    "A single day on Mercury lasts 176 Earth days due to its strange 3:2 spin-orbit resonance with the Sun!"
+                ]
+            },
+            venus: {
+                name: "🌕 Venus",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#ffc649"/><circle cx="35" cy="35" r="8" fill="#ffb347" opacity="0.7"/><circle cx="65" cy="60" r="12" fill="#ffb347" opacity="0.5"/></svg>`,
+                fragments: [
+                    "Venus has lightning in its thick atmosphere linked to volcanic activity and sulfuric acid clouds!",
+                    "It rotates so slowly that its day (243 Earth days) is longer than its year (225 Earth days).",
+                    "Radar mapping shows Venus may undergo planet-wide resurfacing events every few hundred million years."
+                ]
+            },
+            earth: {
+                name: "🌍 Earth",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#6b93d6"/><path d="M20 40 Q35 30 45 35 Q55 40 65 32 Q75 38 80 45 Q70 55 60 50 Q45 52 35 48 Q25 45 20 40 Z" fill="#4f7942"/><path d="M30 65 Q40 60 50 63 Q60 66 70 70 Q65 75 55 73 Q45 70 35 72 Q30 68 30 65 Z" fill="#4f7942"/></svg>`,
+                fragments: [
+                    "Earth is the densest planet in the Solar System due to its large metallic core composition.",
+                    "The Moon stabilizes Earth's axial tilt, preventing extreme climate swings over geological time.",
+                    "Earth's inner core is as hot as the Sun's surface (~5,400°C) and may rotate at a different speed than the rest of the planet!"
+                ]
+            },
+            mars: {
+                name: "🔴 Mars",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#c1440e" /><circle cx="60" cy="65" r="10" fill="#a52a2a" /><circle cx="35" cy="55" r="5" fill="#a52a2a" /></svg>`,
+                fragments: [
+                    "Mars has mysterious seasonal methane spikes in its atmosphere—possibly from geology or biology!",
+                    "Valles Marineris canyon is over 4,000 km long, stretching across the width of the entire United States.",
+                    "NASA's InSight mission detected Marsquakes, revealing Mars is still geologically active beneath its surface."
+                ]
+            },
+            jupiter: {
+                name: "🌐 Jupiter",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#e0c097" /><rect x="20" y="40" width="60" height="10" fill="#c6a778" /><rect x="25" y="60" width="50" height="8" fill="#d3b389" /></svg>`,
+                fragments: [
+                    "Jupiter emits more heat than it receives from the Sun because it's still slowly contracting from its formation.",
+                    "It has the strongest planetary magnetic field in our solar system, creating deadly radiation belts around it.",
+                    "Jupiter's permanent polar auroras are fueled by volcanic material from its moon Io!"
+                ]
+            },
+            saturn: {
+                name: "💠 Saturn",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="35" fill="#d3b991"/><ellipse cx="50" cy="50" rx="48" ry="15" stroke="#b7a685" stroke-width="5" fill="none" transform="rotate(-20 50 50)" /></svg>`,
+                fragments: [
+                    "Saturn is the least dense planet—it would actually float if placed in a giant bathtub of water!",
+                    "Its moon Enceladus sprays water ice geysers into space, hinting at a subsurface ocean beneath.",
+                    "The hexagon-shaped storm at Saturn's north pole is larger than Earth and has lasted for decades!"
+                ]
+            },
+            uranus: {
+                name: "💨 Uranus",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#4fd0e7"/><ellipse cx="50" cy="50" rx="15" ry="48" stroke="#3fb8d3" stroke-width="3" fill="none"/><ellipse cx="50" cy="50" rx="25" ry="48" stroke="#3fb8d3" stroke-width="2" fill="none" opacity="0.6"/></svg>`,
+                fragments: [
+                    "Uranus' extreme 98° tilt might result from a massive ancient collision that knocked it on its side.",
+                    "It's the coldest planet (below −220°C), even colder than Neptune despite being closer to the Sun!",
+                    "Its magnetic field is tilted 59° from its rotation axis and offset from the planet's center, creating a very unusual magnetosphere."
+                ]
+            },
+            neptune: {
+                name: "🌀 Neptune",
+                art: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#4b70dd"/><path d="M25 45 Q40 35 55 45 Q70 55 75 40 Q65 65 50 60 Q35 55 25 45" fill="#3a5aa0" opacity="0.8"/><circle cx="60" cy="35" r="6" fill="#5577ee"/></svg>`,
+                fragments: [
+                    "Neptune radiates 2.6 times more heat than it gets from the Sun for completely unknown reasons!",
+                    "It has dark storms that appear and disappear much faster than Jupiter's more stable storm systems.",
+                    "Triton, its largest moon, has nitrogen gas geysers despite being so incredibly far from the Sun!"
+                ]
+            }
+        };
+
+        // Second chance questions for each planet
+        const planetQuestions = {
+            mercury: {
+                question: "What makes Mercury's day longer than its year?",
+                answers: ["Its distance from the Sun", "Its 3:2 spin-orbit resonance", "Its small size", "Its lack of atmosphere"],
+                correct: 1,
+                explanation: "Mercury has a 3:2 spin-orbit resonance, meaning it rotates 3 times for every 2 orbits around the Sun!"
+            },
+            venus: {
+                question: "What makes Venus the hottest planet despite not being closest to the Sun?",
+                answers: ["Its thick atmosphere", "Its volcanic activity", "Its retrograde rotation", "Its proximity to Earth"],
+                correct: 0,
+                explanation: "Venus has an extremely thick atmosphere that creates a runaway greenhouse effect!"
+            },
+            earth: {
+                question: "What role does Earth's Moon play in maintaining stable conditions?",
+                answers: ["Creates tidal energy", "Stabilizes axial tilt", "Provides magnetic field", "Controls ocean currents"],
+                correct: 1,
+                explanation: "The Moon stabilizes Earth's axial tilt, preventing extreme climate changes over geological time!"
+            },
+            mars: {
+                question: "What mysterious phenomenon occurs seasonally in Mars' atmosphere?",
+                answers: ["Dust storms", "Methane spikes", "Temperature drops", "Aurora displays"],
+                correct: 1,
+                explanation: "Mars has mysterious seasonal methane spikes that could indicate geological or biological activity!"
+            },
+            jupiter: {
+                question: "Why does Jupiter emit more heat than it receives from the Sun?",
+                answers: ["Nuclear fusion", "Gravitational compression", "Radioactive decay", "Solar wind interaction"],
+                correct: 1,
+                explanation: "Jupiter is still slowly contracting from its formation, releasing gravitational energy as heat!"
+            },
+            saturn: {
+                question: "What unique property would allow Saturn to float in water?",
+                answers: ["Its ring system", "Its low density", "Its gaseous composition", "Its magnetic field"],
+                correct: 1,
+                explanation: "Saturn is the least dense planet in our solar system - it would actually float in water!"
+            },
+            uranus: {
+                question: "What likely caused Uranus to have such an extreme axial tilt?",
+                answers: ["Solar wind pressure", "Gravitational pull", "Ancient collision", "Magnetic field shift"],
+                correct: 2,
+                explanation: "Uranus' 98° tilt was likely caused by a massive ancient collision that knocked it on its side!"
+            },
+            neptune: {
+                question: "What makes Neptune's internal heat source mysterious?",
+                answers: ["It's closer to the Sun", "Unknown energy source", "Radioactive core", "Tidal heating"],
+                correct: 1,
+                explanation: "Neptune radiates 2.6 times more heat than it receives from the Sun for completely unknown reasons!"
+            },
+            sun: {
+                question: "What powers the Sun's incredible energy output?",
+                answers: ["Chemical combustion", "Nuclear fusion", "Gravitational collapse", "Radioactive decay"],
+                correct: 1,
+                explanation: "The Sun converts hydrogen into helium through nuclear fusion, releasing enormous amounts of energy!"
+            }
+        };
+
+        // Comprehensive Final Quiz Questions with Multiple Types
+        const finalQuizQuestions = [
+            // Multiple Choice Questions
+            {
+                type: 'multiple-choice',
+                question: "Which NASA mission was the first to successfully land humans on the Moon?",
+                answers: ["Apollo 8", "Apollo 10", "Apollo 11", "Apollo 13"],
+                correct: 2,
+                explanation: "Apollo 11 was the first mission to successfully land humans on the Moon in July 1969!"
+            },
+            {
+                type: 'multiple-choice',
+                question: "What is the most abundant gas in Mars' atmosphere?",
+                answers: ["Nitrogen", "Oxygen", "Carbon Dioxide", "Methane"],
+                correct: 2,
+                explanation: "Mars' atmosphere is about 95% carbon dioxide, making it very different from Earth's atmosphere!"
+            },
+            
+            // True/False Questions
+            {
+                type: 'true-false',
+                question: "True or False: The Perseverance rover collected rock samples on Mars to be returned to Earth on a future mission.",
+                correct: true,
+                explanation: "TRUE! Perseverance has been collecting and caching rock samples for a future Mars Sample Return mission!"
+            },
+            {
+                type: 'true-false',
+                question: "True or False: Jupiter has more moons than Saturn.",
+                correct: true,
+                explanation: "TRUE! Jupiter has 95 known moons while Saturn has 146 confirmed moons. Wait... that's FALSE! Saturn actually has more!"
+            },
+            {
+                type: 'true-false',
+                question: "True or False: Venus rotates in the opposite direction to most other planets.",
+                correct: true,
+                explanation: "TRUE! Venus has retrograde rotation, spinning clockwise when viewed from above its north pole!"
+            },
+            
+            // Fill-in-the-Blank Questions
+            {
+                type: 'fill-in-the-blank',
+                question: "NASA's ________ mission was the first to land a human on the Moon.",
+                correctAnswers: ["apollo 11", "apollo11", "apollo eleven"],
+                explanation: "Apollo 11 was the historic first mission to land humans on the Moon!"
+            },
+            {
+                type: 'fill-in-the-blank',
+                question: "The largest volcano in our solar system is Olympus Mons, located on ________.",
+                correctAnswers: ["mars", "the planet mars"],
+                explanation: "Olympus Mons on Mars is about 13.6 miles (22 kilometers) high - almost three times taller than Mount Everest!"
+            },
+            {
+                type: 'fill-in-the-blank',
+                question: "The Great Red Spot is a massive storm on the planet ________.",
+                correctAnswers: ["jupiter"],
+                explanation: "Jupiter's Great Red Spot is a giant anticyclonic storm that has been raging for hundreds of years!"
+            },
+            
+            // Image-Based Questions (using emojis/symbols for visual elements)
+            {
+                type: 'image-identification',
+                question: "🪐 This symbol represents Saturn. How many main rings does Saturn have that are visible from Earth?",
+                image: "🪐",
+                answers: ["5", "7", "9", "13"],
+                correct: 1,
+                explanation: "Saturn has 7 main ring groups that are visible from Earth, labeled A through G!"
+            },
+            {
+                type: 'image-identification',
+                question: "🌙 This represents Earth's Moon. Approximately how long does it take for the Moon to orbit Earth?",
+                image: "🌙",
+                answers: ["24 hours", "7 days", "27 days", "365 days"],
+                correct: 2,
+                explanation: "The Moon orbits Earth approximately every 27.3 days!"
+            },
+            
+            // Drag-and-Drop/Ordering Questions
+            {
+                type: 'ordering',
+                question: "Arrange these NASA missions in chronological order, from earliest to most recent:",
+                items: ["Apollo", "Gemini", "Mercury", "Artemis"],
+                correctOrder: [2, 1, 0, 3], // Mercury=0, Gemini=1, Apollo=2, Artemis=3
+                explanation: "The correct order is: Mercury (1958-1963), Gemini (1961-1966), Apollo (1961-1975), Artemis (2017-present)!"
+            },
+            {
+                type: 'ordering',
+                question: "Arrange these planets by distance from the Sun (closest to farthest):",
+                items: ["Mars", "Venus", "Earth", "Mercury"],
+                correctOrder: [3, 1, 2, 0], // Mercury, Venus, Earth, Mars
+                explanation: "From the Sun: Mercury, Venus, Earth, Mars!"
+            },
+            
+            // Categorization Questions
+            {
+                type: 'categorization',
+                question: "Categorize these planets as either 'Gas Giant' or 'Terrestrial':",
+                items: ["Jupiter", "Mars", "Saturn", "Venus"],
+                categories: ["Gas Giant", "Terrestrial"],
+                correctCategories: [0, 1, 0, 1], // Jupiter=Gas Giant, Mars=Terrestrial, Saturn=Gas Giant, Venus=Terrestrial
+                explanation: "Gas Giants: Jupiter, Saturn. Terrestrial: Mars, Venus!"
+            },
+            
+            // Gamified Questions
+            {
+                type: 'space-matching',
+                question: "Match each space phenomenon to its correct description:",
+                pairs: [
+                    { item: "Black Hole", description: "Region where gravity is so strong nothing can escape" },
+                    { item: "Nebula", description: "Giant cloud of dust and gas in space" },
+                    { item: "Supernova", description: "Explosive death of a massive star" },
+                    { item: "Pulsar", description: "Rapidly rotating neutron star emitting beams" }
+                ],
+                explanation: "Each space phenomenon has unique characteristics that help astronomers identify them!"
+            },
+            {
+                type: 'planet-builder',
+                question: "Build a habitable planet by selecting the correct features:",
+                features: ["Magnetic Field", "Toxic Atmosphere", "Liquid Water", "Extreme Temperature", "Stable Orbit"],
+                correctFeatures: [0, 2, 4], // Magnetic Field, Liquid Water, Stable Orbit
+                explanation: "A habitable planet needs a magnetic field, liquid water, and stable orbit!"
+            }
+        ];
 
         let score = 0, isSoundOn = false;
         let activeGameCleanup = null;
@@ -248,19 +861,148 @@
 
         const celestialBodies = {
             mercury: { isComplete: false },
+            venus: { isComplete: false },
+            earth: { isComplete: false },
             mars: { isComplete: false },
             jupiter: { isComplete: false },
             saturn: { isComplete: false },
-            sun: { isComplete: false }
+            uranus: { isComplete: false },
+            neptune: { isComplete: false },
+            sun: { isComplete: false },
+            spaceship: { isComplete: false }
+        };
+
+        // NASA Exoplanet Catalog Data
+        const exoplanets = {
+            'proxima-centauri-b': {
+                name: 'Proxima Centauri b',
+                type: 'super-earth',
+                mass: '1.055 Earths',
+                radius: '1.02 x Earth',
+                orbitalPeriod: '11.2 days',
+                orbitalRadius: '0.04848 AU',
+                discoveryYear: 2016,
+                discoveryMethod: 'Radial Velocity',
+                hostStar: 'Proxima Centauri (M-type)',
+                distance: '4.24 light-years',
+                temperature: '-39°C to 30°C (estimated)',
+                description: 'The closest known exoplanet to Earth, potentially habitable and located in the Alpha Centauri system.',
+                isExplored: false,
+                emoji: '🌍'
+            },
+            'kepler-452b': {
+                name: 'Kepler-452b',
+                type: 'super-earth',
+                mass: '5 Earths (estimated)',
+                radius: '1.6 x Earth',
+                orbitalPeriod: '385 days',
+                orbitalRadius: '1.04 AU',
+                discoveryYear: 2015,
+                discoveryMethod: 'Transit',
+                hostStar: 'Kepler-452 (G-type)',
+                distance: '1,402 light-years',
+                temperature: 'Similar to Earth (estimated)',
+                description: 'Often called "Earth\'s cousin," this planet orbits in the habitable zone of a Sun-like star.',
+                isExplored: false,
+                emoji: '🌎'
+            },
+            'trappist-1e': {
+                name: 'TRAPPIST-1e',
+                type: 'terrestrial',
+                mass: '0.692 Earths',
+                radius: '0.918 x Earth',
+                orbitalPeriod: '6.1 days',
+                orbitalRadius: '0.028 AU',
+                discoveryYear: 2016,
+                discoveryMethod: 'Transit',
+                hostStar: 'TRAPPIST-1 (M-dwarf)',
+                distance: '39.6 light-years',
+                temperature: '-22°C (estimated)',
+                description: 'One of seven Earth-sized planets in the TRAPPIST-1 system, potentially habitable.',
+                isExplored: false,
+                emoji: '🪨'
+            },
+            'hd-209458b': {
+                name: 'HD 209458 b',
+                type: 'gas-giant',
+                mass: '0.69 Jupiters',
+                radius: '1.38 x Jupiter',
+                orbitalPeriod: '3.5 days',
+                orbitalRadius: '0.047 AU',
+                discoveryYear: 1999,
+                discoveryMethod: 'Transit',
+                hostStar: 'HD 209458 (G-type)',
+                distance: '159 light-years',
+                temperature: '1000°C',
+                description: 'First exoplanet detected transiting its star, nicknamed "Osiris" due to its extreme conditions.',
+                isExplored: false,
+                emoji: '🪐'
+            },
+            'k2-18b': {
+                name: 'K2-18 b',
+                type: 'neptune-like',
+                mass: '8.6 Earths',
+                radius: '2.3 x Earth',
+                orbitalPeriod: '33 days',
+                orbitalRadius: '0.14 AU',
+                discoveryYear: 2015,
+                discoveryMethod: 'Transit',
+                hostStar: 'K2-18 (M-dwarf)',
+                distance: '124 light-years',
+                temperature: '-73°C to 47°C',
+                description: 'A sub-Neptune in the habitable zone with detected water vapor in its atmosphere.',
+                isExplored: false,
+                emoji: '💙'
+            },
+            'wasp-121b': {
+                name: 'WASP-121b',
+                type: 'gas-giant',
+                mass: '1.18 Jupiters',
+                radius: '1.81 x Jupiter',
+                orbitalPeriod: '1.3 days',
+                orbitalRadius: '0.025 AU',
+                discoveryYear: 2015,
+                discoveryMethod: 'Transit',
+                hostStar: 'WASP-121 (F-type)',
+                distance: '880 light-years',
+                temperature: '2500°C',
+                description: 'An ultra-hot Jupiter with a stratosphere containing glowing water vapor.',
+                isExplored: false,
+                emoji: '🔥'
+            }
         };
 
         const synth = new Tone.Synth().toDestination();
+        const voiceSynth = new Tone.AMSynth().toDestination();
         const backgroundMusic = new Tone.Loop(time => synth.triggerAttackRelease("C2", "8n", time), "1n");
 
         function playSound(type, note = "C4", duration = "16n") {
             if (!isSoundOn) return; Tone.start();
             const notes = { correct: "C5", incorrect: "G2", click: "C4", collect: "A5", hit: "A2", shield: "G4", sequence: "E5", win: "G5" };
             synth.triggerAttackRelease(notes[type] || note, duration);
+        }
+
+        function playDataFragmentAudio(planetKey) {
+            if (!isSoundOn) return;
+            const data = recoveredData[planetKey];
+            if (data && data.audio) {
+                const words = data.audio.split(' ');
+                let currentTime = Tone.now();
+                const delay = 0.3; // Delay between each word
+
+                words.forEach((word, index) => {
+                    // Generate pitch based on word length and position for robotic effect
+                    const baseNote = 3 + (word.length % 3);
+                    const pitchVariation = (index % 2) ? 0 : 1;
+                    const note = `C${baseNote + pitchVariation}`;
+                    
+                    // Slightly different durations for more robotic speech pattern
+                    const duration = word.length > 5 ? '4n' : '8n';
+                    
+                    voiceSynth.triggerAttackRelease(note, duration, currentTime);
+                    currentTime += delay;
+                });
+            }
         }
 
         function toggleSound() {
@@ -282,6 +1024,131 @@
             if(screens[toScreen]) screens[toScreen].classList.remove('hidden');
         }
         
+        // Galaxy Explorer Functions
+        function showGalaxyScreen() {
+            switchScreen('galaxy');
+            initializeGalaxyExplorer();
+        }
+        
+        function initializeGalaxyExplorer() {
+            renderExoplanets();
+            updateGalaxyStats();
+            document.getElementById('exoplanet-search').value = '';
+            document.getElementById('exoplanet-filter').value = 'all';
+        }
+        
+        function renderExoplanets() {
+            const grid = document.getElementById('exoplanet-grid');
+            const searchTerm = document.getElementById('exoplanet-search').value.toLowerCase();
+            const filterType = document.getElementById('exoplanet-filter').value;
+            
+            grid.innerHTML = '';
+            
+            Object.entries(exoplanets).forEach(([id, planet]) => {
+                // Apply filters
+                if (searchTerm && !planet.name.toLowerCase().includes(searchTerm)) return;
+                if (filterType !== 'all' && planet.type !== filterType) return;
+                
+                const planetCard = document.createElement('div');
+                planetCard.className = `bg-gray-800 border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-purple-400 ${planet.isExplored ? 'border-green-500' : 'border-gray-600'}`;
+                planetCard.onclick = () => showExoplanetDetail(id);
+                
+                planetCard.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-3xl">${planet.emoji}</span>
+                        <span class="text-xs px-2 py-1 rounded ${planet.isExplored ? 'bg-green-600' : 'bg-gray-600'}">${planet.isExplored ? 'Explored' : 'Unknown'}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-purple-300 mb-1">${planet.name}</h3>
+                    <p class="text-sm text-gray-300 mb-2">${planet.type.replace('-', ' ')}</p>
+                    <p class="text-xs text-gray-400">${planet.distance} away</p>
+                `;
+                
+                grid.appendChild(planetCard);
+            });
+        }
+        
+        function showExoplanetDetail(planetId) {
+            const planet = exoplanets[planetId];
+            const detailDiv = document.getElementById('exoplanet-detail');
+            const nameEl = document.getElementById('detail-name');
+            const contentEl = document.getElementById('detail-content');
+            
+            nameEl.textContent = planet.name;
+            
+            contentEl.innerHTML = `
+                <div class="space-y-4">
+                    <div class="text-6xl text-center">${planet.emoji}</div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h4 class="text-lg font-bold text-purple-300 mb-2">Physical Properties</h4>
+                        <p><strong>Type:</strong> ${planet.type.replace('-', ' ')}</p>
+                        <p><strong>Mass:</strong> ${planet.mass}</p>
+                        <p><strong>Radius:</strong> ${planet.radius}</p>
+                        <p><strong>Temperature:</strong> ${planet.temperature}</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h4 class="text-lg font-bold text-purple-300 mb-2">Orbital Characteristics</h4>
+                        <p><strong>Orbital Period:</strong> ${planet.orbitalPeriod}</p>
+                        <p><strong>Distance from Star:</strong> ${planet.orbitalRadius}</p>
+                        <p><strong>Host Star:</strong> ${planet.hostStar}</p>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h4 class="text-lg font-bold text-purple-300 mb-2">Discovery Info</h4>
+                        <p><strong>Discovered:</strong> ${planet.discoveryYear}</p>
+                        <p><strong>Method:</strong> ${planet.discoveryMethod}</p>
+                        <p><strong>Distance from Earth:</strong> ${planet.distance}</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h4 class="text-lg font-bold text-purple-300 mb-2">Description</h4>
+                        <p class="text-sm">${planet.description}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="exploreExoplanet('${planetId}')" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            ${planet.isExplored ? '✓ Explored' : '🚀 Explore'}
+                        </button>
+                        <button onclick="closeExoplanetDetail()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            detailDiv.classList.remove('hidden');
+        }
+        
+        function closeExoplanetDetail() {
+            document.getElementById('exoplanet-detail').classList.add('hidden');
+        }
+        
+        function exploreExoplanet(planetId) {
+            const planet = exoplanets[planetId];
+            if (!planet.isExplored) {
+                planet.isExplored = true;
+                playSound('success'); // Use existing sound
+                renderExoplanets();
+                updateGalaxyStats();
+                showExoplanetDetail(planetId); // Refresh the detail view
+            }
+        }
+        
+        function filterExoplanets() {
+            renderExoplanets();
+        }
+        
+        function updateGalaxyStats() {
+            const totalExoplanets = Object.keys(exoplanets).length;
+            const exploredCount = Object.values(exoplanets).filter(p => p.isExplored).length;
+            
+            document.getElementById('explored-count').textContent = exploredCount;
+            document.getElementById('total-exoplanets').textContent = totalExoplanets;
+        }
+        
+        function showMapScreen() {
+            switchScreen('map');
+            updateMapScreen(); // Refresh the map display
+        }
+        
         function showWinIndicator(canvas, callback) {
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = "rgba(0,0,0,0.7)";
@@ -296,6 +1163,70 @@
             ctx.shadowBlur = 0;
             playSound('win');
             setTimeout(callback, 2000);
+        }
+
+        function showFailureIndicator(canvas, planetName, callback) {
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = "rgba(50,0,0,0.8)";
+            ctx.fillRect(0,0,canvas.width, canvas.height);
+            
+            // Main failure message
+            ctx.font = "bold 40px Orbitron";
+            ctx.fillStyle = "#ff6666";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.shadowColor = '#ff0000';
+            ctx.shadowBlur = 20;
+            ctx.fillText("MISSION FAILED", canvas.width / 2, canvas.height / 2 - 60);
+            
+            // Encouraging message
+            ctx.font = "24px Orbitron";
+            ctx.fillStyle = "var(--terminal-text)";
+            ctx.shadowColor = 'var(--terminal-glow)';
+            ctx.shadowBlur = 10;
+            ctx.fillText(`${planetName.toUpperCase()} DATA CORRUPTED`, canvas.width / 2, canvas.height / 2 - 10);
+            ctx.fillText("RECALIBRATING SYSTEMS...", canvas.width / 2, canvas.height / 2 + 20);
+            ctx.fillText("RETURN TO MISSION CONTROL", canvas.width / 2, canvas.height / 2 + 50);
+            
+            ctx.shadowBlur = 0;
+            
+            // Play failure sound with robotic voice
+            playSound('lose');
+            playFailureAudio(planetName);
+            
+            setTimeout(callback, 4200);
+        }
+
+        function playFailureAudio(planetName) {
+            if (!isSoundOn || !window.Tone) return;
+            
+            const failureMessages = [
+                "Mission parameters exceeded",
+                "Data transmission interrupted", 
+                "Recalibrating probe systems",
+                "Returning to base coordinates"
+            ];
+            
+            const message = failureMessages[Math.floor(Math.random() * failureMessages.length)];
+            
+            if (!window.failureSynth) {
+                window.failureSynth = new Tone.AMSynth({
+                    harmonicity: 2,
+                    detune: 0,
+                    oscillator: { type: 'square' },
+                    envelope: { attack: 0.01, decay: 0.1, sustain: 0.3, release: 0.1 },
+                    modulation: { type: 'sine' },
+                    modulationEnvelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.1 }
+                }).toDestination();
+            }
+            
+            const words = message.split(' ');
+            words.forEach((word, index) => {
+                setTimeout(() => {
+                    const baseFreq = 180;
+                    window.failureSynth.triggerAttackRelease(baseFreq, '0.15');
+                }, index * 300);
+            });
         }
 
         function createParticles(x, y, count, color) {
@@ -324,9 +1255,12 @@
         }
 
         // === New function for the info overlay ===
-        function createPlanetInfoOverlay(planetKey, gameScreenId) {
-            const data = recoveredData[planetKey];
+        function createPlanetInfoOverlay(planetKey, gameScreenId, fragmentIndex = 0) {
+            const data = midGameData[planetKey];
             const gameScreen = document.getElementById(gameScreenId);
+
+            // Pause game intervals/timers
+            if (window.pauseGameTimers) window.pauseGameTimers();
 
             const overlay = document.createElement('div');
             overlay.id = `${planetKey}-info-overlay`;
@@ -338,8 +1272,8 @@
                             ${data.art}
                         </div>
                         <div>
-                            <h3 class="font-orbitron text-xl mb-2 text-yellow-300">${data.name} Data Fragment</h3>
-                            <p class="text-sm text-gray-300">${data.text}</p>
+                            <h3 class="font-orbitron text-xl mb-2 text-yellow-300">${data.name} Data Fragment ${fragmentIndex + 1}/3</h3>
+                            <p class="text-sm text-gray-300">${data.fragments[fragmentIndex]}</p>
                         </div>
                     </div>
                     <button id="close-overlay-btn" class="btn-primary font-orbitron text-sm px-6 py-2 rounded-md mt-4 w-full">Continue Mission</button>
@@ -347,7 +1281,80 @@
             `;
 
             gameScreen.appendChild(overlay);
-            document.getElementById('close-overlay-btn').onclick = () => overlay.remove();
+            document.getElementById('close-overlay-btn').onclick = () => {
+                overlay.remove();
+                if (window.resumeGameTimers) window.resumeGameTimers();
+            };
+        }
+
+        // === Second Chance Question System ===
+        function showSecondChanceQuestion(planetKey, gameScreenId, onSuccess, onFailure) {
+            const questionData = planetQuestions[planetKey];
+            const gameScreen = document.getElementById(gameScreenId);
+
+            // Pause game timers
+            if (window.pauseGameTimers) window.pauseGameTimers();
+
+            const overlay = document.createElement('div');
+            overlay.id = `${planetKey}-question-overlay`;
+            overlay.className = 'absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-95 z-30';
+            
+            const answersHTML = questionData.answers.map((answer, index) => 
+                `<button class="question-answer btn-primary font-orbitron text-sm px-4 py-2 rounded-md mb-2 w-full text-left hover:bg-yellow-600" data-index="${index}">
+                    ${String.fromCharCode(65 + index)}. ${answer}
+                </button>`
+            ).join('');
+
+            overlay.innerHTML = `
+                <div class="terminal-panel rounded-lg p-6 w-3/4 max-w-lg text-center">
+                    <div class="mb-6">
+                        <h3 class="font-orbitron text-xl mb-4 text-red-400">⚠️ MISSION CRITICAL ⚠️</h3>
+                        <p class="text-sm text-gray-300 mb-4">Your mission is failing! Answer this question about ${midGameData[planetKey].name} to get a second chance:</p>
+                        <p class="text-lg text-yellow-300 font-semibold mb-6">${questionData.question}</p>
+                        <div class="space-y-2">
+                            ${answersHTML}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            gameScreen.appendChild(overlay);
+
+            // Add click handlers for answers
+            overlay.querySelectorAll('.question-answer').forEach(button => {
+                button.onclick = () => {
+                    const selectedIndex = parseInt(button.dataset.index);
+                    const isCorrect = selectedIndex === questionData.correct;
+                    
+                    // Show result
+                    overlay.innerHTML = `
+                        <div class="terminal-panel rounded-lg p-6 w-3/4 max-w-lg text-center">
+                            <div class="mb-6">
+                                <h3 class="font-orbitron text-xl mb-4 ${isCorrect ? 'text-green-400' : 'text-red-400'}">
+                                    ${isCorrect ? '✅ CORRECT!' : '❌ INCORRECT'}
+                                </h3>
+                                <p class="text-sm text-gray-300 mb-4">${questionData.explanation}</p>
+                                <button id="continue-btn" class="btn-primary font-orbitron text-sm px-6 py-2 rounded-md mt-4">
+                                    ${isCorrect ? 'Continue Mission' : 'Mission Failed'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    document.getElementById('continue-btn').onclick = () => {
+                        overlay.remove();
+                        if (window.resumeGameTimers) window.resumeGameTimers();
+                        
+                        if (isCorrect) {
+                            playSound('correct');
+                            onSuccess();
+                        } else {
+                            playSound('incorrect');
+                            onFailure();
+                        }
+                    };
+                };
+            });
         }
 
         function bootUpAnimation() {
@@ -366,30 +1373,84 @@
         
         function updateMapScreen() {
             let completedCount = 0;
-            const totalPlanets = Object.keys(celestialBodies).length - 1; // Exclude Sun from count
+            const totalPlanets = Object.keys(celestialBodies).length - 2; // Exclude Sun and Spaceship from planet count
             Object.keys(celestialBodies).forEach(key => {
                 const planetEl = document.querySelector(`.celestial-body[data-planet="${key}"]`);
-                if (key !== 'sun' && celestialBodies[key].isComplete) {
+                if (key !== 'sun' && key !== 'spaceship' && celestialBodies[key].isComplete) {
                     planetEl.classList.add('completed');
                     completedCount++;
-                } else if (key !== 'sun') {
+                } else if (key !== 'sun' && key !== 'spaceship') {
                     planetEl.classList.remove('completed');
                 }
             });
             completedPlanetsEl.textContent = completedCount;
             totalPlanetsEl.textContent = totalPlanets;
             
+            // Update mission status text dynamically
+            const missionStatusText = document.querySelector('#map-screen p');
+            const stagePlanets = document.getElementById('stage-planets');
+            const stageSun = document.getElementById('stage-sun');
+            const stageQuiz = document.getElementById('stage-quiz');
+            
+            // Update progress indicators
+            if (completedCount === totalPlanets) {
+                stagePlanets.innerHTML = '<span class="w-3 h-3 rounded-full bg-green-500"></span><span class="text-green-400">8 Planets ✓</span>';
+            } else {
+                stagePlanets.innerHTML = `<span class="w-3 h-3 rounded-full bg-cyan-500"></span><span class="text-cyan-400">8 Planets (${completedCount}/${totalPlanets})</span>`;
+            }
+            
+            if (celestialBodies.sun && celestialBodies.sun.isComplete) {
+                stageSun.innerHTML = '<span class="w-3 h-3 rounded-full bg-green-500"></span><span class="text-green-400">Solar Challenge ✓</span>';
+            } else if (completedCount === totalPlanets) {
+                stageSun.innerHTML = '<span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="text-yellow-400">Solar Challenge</span>';
+            } else {
+                stageSun.innerHTML = '<span class="w-3 h-3 rounded-full bg-gray-600"></span><span>Solar Challenge</span>';
+            }
+            
+            if (celestialBodies.spaceship && celestialBodies.spaceship.isComplete) {
+                stageQuiz.innerHTML = '<span class="w-3 h-3 rounded-full bg-green-500"></span><span class="text-green-400">Final Quiz ✓</span>';
+                missionStatusText.innerHTML = `🎉 <strong>MISSION COMPLETE!</strong> All challenges conquered! <span id="completed-planets">${completedCount}</span>/<span id="total-planets">${totalPlanets}</span> planets + Sun + Final Quiz completed.`;
+            } else if (celestialBodies.sun && celestialBodies.sun.isComplete) {
+                stageQuiz.innerHTML = '<span class="w-3 h-3 rounded-full bg-yellow-500"></span><span class="text-yellow-400">Final Quiz</span>';
+                missionStatusText.innerHTML = `🌞 Solar Challenge Complete! Face the Final Quiz to save humanity! <span id="completed-planets">${completedCount}</span>/<span id="total-planets">${totalPlanets}</span> planets + Sun completed.`;
+            } else if (completedCount === totalPlanets) {
+                stageQuiz.innerHTML = '<span class="w-3 h-3 rounded-full bg-gray-600"></span><span>Final Quiz</span>';
+                missionStatusText.innerHTML = `⚡ All planets recovered! The Sun awaits your challenge! <span id="completed-planets">${completedCount}</span>/<span id="total-planets">${totalPlanets}</span> planets completed.`;
+            } else {
+                stageQuiz.innerHTML = '<span class="w-3 h-3 rounded-full bg-gray-600"></span><span>Final Quiz</span>';
+                missionStatusText.innerHTML = `Recover all planetary data to unlock the Solar Challenge, then face the Final Quiz. <span id="completed-planets">${completedCount}</span>/<span id="total-planets">${totalPlanets}</span> planets recovered.`;
+            }
+            
+            // Handle Sun unlock
             const sunEl = document.getElementById('map-sun-interactive');
             const sunLabel = sunEl.querySelector('.body-label');
-            if (completedCount === totalPlanets) {
+            // if (completedCount === totalPlanets) {
                 sunEl.classList.add('unlocked');
                 sunLabel.textContent = "Sun [UNLOCKED]";
-            } else {
-                 sunEl.classList.remove('unlocked');
-                 sunLabel.textContent = "Sun [LOCKED]";
-            }
+        //    } else {
+        //          sunEl.classList.remove('unlocked');
+        //          sunLabel.textContent = "Sun [LOCKED]";
+        //     } 
+            
+            // Handle Spaceship unlock - appears after Sun is completed
+            const spaceshipEl = document.getElementById('map-spaceship');
+            const spaceshipLabel = spaceshipEl.querySelector('.body-label');
             if(celestialBodies.sun.isComplete){
-                endGame(true, "All data fragments recovered! You are a hero!");
+                spaceshipEl.style.display = 'block';
+                spaceshipEl.classList.add('unlocked');
+                spaceshipLabel.textContent = "🚀 Final Quiz [UNLOCKED]";
+                spaceshipLabel.style.color = 'var(--success-glow)';
+            } else {
+                spaceshipEl.style.display = 'none';
+            }
+            
+            // Final completion check
+            if(celestialBodies.spaceship.isComplete){
+                // Quiz completion is handled in completeSpaceshipQuiz()
+                return;
+            } else if(celestialBodies.sun.isComplete && !celestialBodies.spaceship.isComplete){
+                // Show spaceship is available but not completed yet
+                return;
             }
         }
 
@@ -397,6 +1458,10 @@
             switchScreen('dataRecovered');
             const data = recoveredData[planetKey];
             planetInfoArtEl.innerHTML = data.art;
+            
+            // Play the synthesized audio for the data fragment
+            playDataFragmentAudio(planetKey);
+            
             typeWriter(planetInfoNameEl, data.name, 100, () => {
                 typeWriter(planetInfoTextEl, data.text, 25);
             });
@@ -414,68 +1479,204 @@
         // --- SUN MINIGAME ---
         function launchSunMinigame() {
             switchScreen('sunMinigame');
-            const canvas = document.getElementById('sun-canvas'); const ctx = canvas.getContext('2d');
-            const shieldEl = document.getElementById('sun-shield'); const timerEl = document.getElementById('sun-timer');
-            let player = { angle: 0, radius: 150, size: 20, speed: 0.05 };
-            let keys = {}, flares = [], shield = 100, timer = 45;
-            const sunPos = { x: canvas.width/2, y: canvas.height/2 };
+            const canvas = document.getElementById('sun-canvas'); 
+            const ctx = canvas.getContext('2d');
+            const shieldEl = document.getElementById('sun-shield');
+            const timerEl = document.getElementById('sun-timer');
             
-            const keydownHandler = e => keys[e.key] = true; const keyupHandler = e => keys[e.key] = false;
-            document.addEventListener('keydown', keydownHandler); document.addEventListener('keyup', keyupHandler);
+            let player = { angle: 0, radius: 150, shield: 100 };
+            let flares = [];
+            let keys = {};
+            let timer = 30;
+            let usedSecondChance = false;
+            let fragmentsShown = [];
+            
+            const keydownHandler = e => keys[e.key] = true;
+            const keyupHandler = e => keys[e.key] = false;
+            document.addEventListener('keydown', keydownHandler);
+            document.addEventListener('keyup', keyupHandler);
             
             const gameLoop = () => {
-                if (keys['ArrowLeft']) player.angle -= player.speed;
-                if (keys['ArrowRight']) player.angle += player.speed;
+                // Player movement
+                if (keys['ArrowLeft']) player.angle -= 0.05;
+                if (keys['ArrowRight']) player.angle += 0.05;
                 
+                // Clear canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Draw Sun
-                const sunGradient = ctx.createRadialGradient(sunPos.x, sunPos.y, 20, sunPos.x, sunPos.y, 60);
-                sunGradient.addColorStop(0, '#fff7a1'); sunGradient.addColorStop(0.5, '#f9d71c'); sunGradient.addColorStop(1, 'rgba(255, 140, 0, 0)');
-                ctx.fillStyle = sunGradient; ctx.beginPath(); ctx.arc(sunPos.x, sunPos.y, 60, 0, Math.PI*2); ctx.fill();
+                // Draw sun at center
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const sunRadius = 60;
                 
-                // Draw Player
-                const playerX = sunPos.x + Math.cos(player.angle) * player.radius;
-                const playerY = sunPos.y + Math.sin(player.angle) * player.radius;
-                ctx.drawImage(playerShipImage, playerX - player.size/2, playerY - player.size/2, player.size, player.size * 1.25);
+                // Sun glow effect
+                ctx.fillStyle = 'rgba(255, 204, 0, 0.8)';
+                ctx.shadowBlur = 40;
+                ctx.shadowColor = '#ffcc00';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, sunRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
                 
-                // Update and Draw Flares
-                flares.forEach((f, i) => {
-                    f.dist += f.speed;
-                    const flareX = sunPos.x + Math.cos(f.angle) * f.dist;
-                    const flareY = sunPos.y + Math.sin(f.angle) * f.dist;
-                    const flareGradient = ctx.createRadialGradient(flareX, flareY, 1, flareX, flareY, f.size);
-                    flareGradient.addColorStop(0, 'white'); flareGradient.addColorStop(0.4, '#ffcc00'); flareGradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
-                    ctx.fillStyle = flareGradient; ctx.beginPath(); ctx.arc(flareX, flareY, f.size, 0, Math.PI*2); ctx.fill();
+                // Sun surface details
+                ctx.fillStyle = '#ff6600';
+                ctx.beginPath();
+                ctx.arc(centerX - 15, centerY - 10, 8, 0, Math.PI * 2);
+                ctx.arc(centerX + 10, centerY + 15, 6, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw player ship orbiting the sun
+                const playerX = centerX + Math.cos(player.angle) * player.radius;
+                const playerY = centerY + Math.sin(player.angle) * player.radius;
+                
+                // Ship exhaust trail
+                createParticles(playerX, playerY, 2, '#00ffff');
+                
+                // Draw player ship
+                ctx.save();
+                ctx.translate(playerX, playerY);
+                ctx.rotate(player.angle + Math.PI / 2);
+                ctx.drawImage(playerShipImage, -10, -12, 20, 25);
+                ctx.restore();
+                
+                // Update and draw flares
+                flares.forEach((flare, i) => {
+                    flare.dist += flare.speed;
                     
-                    if (f.dist > canvas.width) flares.splice(i,1);
-                    const distToPlayer = Math.sqrt(Math.pow(playerX - flareX, 2) + Math.pow(playerY - flareY, 2));
-                    if (distToPlayer < (player.size/2 + f.size/2)) {
-                        flares.splice(i,1); shield -= 25; shieldEl.textContent = `${shield}%`; playSound('hit');
-                        createParticles(playerX, playerY, 30, '#ff5050');
-                        canvas.style.animation = 'screenShake 0.2s'; setTimeout(()=>canvas.style.animation='', 200);
-                        if (shield <= 0) cleanup(false);
+                    const flareX = centerX + Math.cos(flare.angle) * flare.dist;
+                    const flareY = centerY + Math.sin(flare.angle) * flare.dist;
+                    
+                    // Draw flare
+                    ctx.fillStyle = '#ff4400';
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#ff4400';
+                    ctx.beginPath();
+                    ctx.arc(flareX, flareY, flare.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    
+                    // Check collision with player
+                    const dist = Math.sqrt((flareX - playerX) ** 2 + (flareY - playerY) ** 2);
+                    if (dist < flare.size + 15) {
+                        player.shield -= 20;
+                        shieldEl.textContent = player.shield;
+                        playSound('hit');
+                        createParticles(playerX, playerY, 30, '#ff4400');
+                        canvas.style.animation = 'screenShake 0.3s';
+                        setTimeout(() => canvas.style.animation = '', 300);
+                        flares.splice(i, 1);
+                        
+                        if (player.shield <= 0) {
+                            if (!usedSecondChance) {
+                                usedSecondChance = true;
+                                showSecondChanceQuestion('sun', 'sun-minigame-screen',
+                                    () => { 
+                                        player.shield = 50; 
+                                        shieldEl.textContent = player.shield;
+                                        timer += 15;
+                                        timerEl.textContent = timer;
+                                    },
+                                    () => cleanup(false)
+                                );
+                            } else {
+                                cleanup(false);
+                            }
+                        }
+                    }
+                    
+                    // Remove flares that are off-screen
+                    if (flare.dist > 400) {
+                        flares.splice(i, 1);
                     }
                 });
+                
+                // Show fragments at specific intervals
+                if ((timer === 25 || timer === 15 || timer === 5) && !fragmentsShown.includes(timer)) {
+                    const fragmentIndex = timer === 25 ? 0 : timer === 15 ? 1 : 2;
+                    fragmentsShown.push(timer);
+                    if (!document.getElementById('sun-info-overlay')) {
+                        createPlanetInfoOverlay('sun', 'sun-minigame-screen', fragmentIndex);
+                    }
+                }
+                
                 updateAndDrawParticles(ctx);
             };
-
-            const gameInterval = setInterval(gameLoop, 1000/60);
-            const flareInterval = setInterval(() => flares.push({angle: Math.random()*Math.PI*2, dist: 70, speed: Math.random()*2+2, size: Math.random() * 10 + 10}), 400);
-            const timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; if(timer <= 0) cleanup(true); }, 1000);
+            
+            let paused = false;
+            let gameInterval, flareInterval, timerInterval;
+            
+            function pauseGameTimers() {
+                if (!paused) {
+                    clearInterval(gameInterval);
+                    clearInterval(flareInterval);
+                    clearInterval(timerInterval);
+                    paused = true;
+                }
+            }
+            
+            function resumeGameTimers() {
+                if (paused) {
+                    gameInterval = setInterval(gameLoop, 1000/60);
+                    flareInterval = setInterval(() => {
+                        flares.push({
+                            angle: Math.random() * Math.PI * 2,
+                            dist: 70,
+                            speed: Math.random() * 2 + 2,
+                            size: Math.random() * 10 + 10
+                        });
+                    }, 400);
+                    timerInterval = setInterval(() => {
+                        timer--;
+                        timerEl.textContent = timer;
+                        if (timer <= 0) cleanup(true);
+                    }, 1000);
+                    paused = false;
+                }
+            }
+            
+            window.pauseGameTimers = pauseGameTimers;
+            window.resumeGameTimers = resumeGameTimers;
             
             const cleanup = (success, silent = false) => {
-                 clearInterval(gameInterval); clearInterval(flareInterval); clearInterval(timerInterval);
-                 document.removeEventListener('keydown', keydownHandler); document.removeEventListener('keyup', keyupHandler); activeGameCleanup = null;
-                 if(silent) return;
-                 if(success) {
+                clearInterval(gameInterval);
+                clearInterval(flareInterval);
+                clearInterval(timerInterval);
+                document.removeEventListener('keydown', keydownHandler);
+                document.removeEventListener('keyup', keyupHandler);
+                activeGameCleanup = null;
+                
+                if (silent) return;
+                
+                if (success) {
                     showWinIndicator(canvas, () => {
-                        score += 200; celestialBodies.sun.isComplete = true; showDataRecovered('sun');
+                        score += 200;
+                        celestialBodies.sun.isComplete = true;
+                        showDataRecovered('sun');
                     });
-                 } else { switchScreen('map'); }
+                } else {
+                    showFailureIndicator(canvas, 'Sun', () => switchScreen('map'));
+                }
             };
+            
             activeGameCleanup = cleanup;
+            
+            // Initialize game
+            gameInterval = setInterval(gameLoop, 1000/60);
+            flareInterval = setInterval(() => {
+                flares.push({
+                    angle: Math.random() * Math.PI * 2,
+                    dist: 70,
+                    speed: Math.random() * 2 + 2,
+                    size: Math.random() * 10 + 10
+                });
+            }, 400);
+            timerInterval = setInterval(() => {
+                timer--;
+                timerEl.textContent = timer;
+                if (timer <= 0) cleanup(true);
+            }, 1000);
         }
+        
 
         // --- MERCURY MINIGAME ---
         function launchMercuryMinigame() {
@@ -484,7 +1685,7 @@
             const levelEl = document.getElementById('mercury-level'); const strikesEl = document.getElementById('mercury-strikes'); const statusEl = document.getElementById('mercury-status');
             const colors = ['#ff5050', '#fef08a', '#00ffff', '#50b0ff'];
             const pads = [ {x:150, y:50, w:200, h:150, r:15}, {x:350, y:50, w:200, h:150, r:15}, {x:150, y:200, w:200, h:150, r:15}, {x:350, y:200, w:200, h:150, r:15} ];
-            let sequence = [], playerSequence = [], strikes = 0, state = 'watching', goal = 7;
+            let sequence = [], playerSequence = [], strikes = 0, state = 'watching', goal = 7, fragmentsShown = [], usedSecondChance = false;
             function drawPads(activeIndex = -1, pulse = 0) {
                 ctx.clearRect(0,0,canvas.width, canvas.height);
                 pads.forEach((p, i) => {
@@ -516,8 +1717,26 @@
                     if(playerSequence[playerSequence.length-1] !== sequence[playerSequence.length-1]) {
                         strikes++; strikesEl.textContent = `${strikes}/3`; playSound('incorrect');
                         canvas.style.animation = 'screenShake 0.2s'; setTimeout(()=>canvas.style.animation='', 200);
-                        if(strikes >= 3) { cleanup(false); } else { state='watching'; setTimeout(nextSequence, 1000); }
+                        if(strikes >= 3) { 
+                            if (!usedSecondChance) {
+                                usedSecondChance = true;
+                                showSecondChanceQuestion('mercury', 'mercury-minigame-screen', 
+                                    () => { strikes = 0; strikesEl.textContent = '0/3'; state='watching'; setTimeout(nextSequence, 1000); },
+                                    () => cleanup(false)
+                                );
+                            } else {
+                                cleanup(false); 
+                            }
+                        } else { state='watching'; setTimeout(nextSequence, 1000); }
                     } else if(playerSequence.length === sequence.length) {
+                        // Show fragments at levels 3, 5, and 7
+                        if((sequence.length === 3 || sequence.length === 5 || sequence.length === 7) && !fragmentsShown.includes(sequence.length)) {
+                            const fragmentIndex = sequence.length === 3 ? 0 : sequence.length === 5 ? 1 : 2;
+                            fragmentsShown.push(sequence.length);
+                            if (!document.getElementById('mercury-info-overlay')) {
+                                createPlanetInfoOverlay('mercury', 'mercury-minigame-screen', fragmentIndex);
+                            }
+                        }
                         if(sequence.length >= goal) { cleanup(true); } else { state='watching'; setTimeout(nextSequence, 1000); }
                     }
                 }
@@ -527,7 +1746,7 @@
             const cleanup = (success, silent = false) => {
                 canvas.removeEventListener('click', clickHandler); clearInterval(particleLoop); activeGameCleanup = null;
                 if(silent) return;
-                if(success) { showWinIndicator(canvas, () => { score += 75; celestialBodies.mercury.isComplete = true; showDataRecovered('mercury'); }); } else { switchScreen('map'); }
+                if(success) { showWinIndicator(canvas, () => { score += 75; celestialBodies.mercury.isComplete = true; showDataRecovered('mercury'); }); } else { showFailureIndicator(canvas, 'Mercury', () => switchScreen('map')); }
             };
             activeGameCleanup = cleanup; drawPads(); nextSequence();
         }
@@ -539,7 +1758,7 @@
             const packetsCollectedEl = document.getElementById('mars-packets-collected');
             const timerEl = document.getElementById('mars-timer');
             let player = { x: canvas.width / 2 - 15, y: canvas.height - 40, width: 20, height: 25, speed: 5 };
-            let keys = {}, dataPackets = [], obstacles = [], collected = 0, timer = 30, goal = 12;
+            let keys = {}, dataPackets = [], obstacles = [], collected = 0, timer = 30, goal = 12, usedSecondChance = false;
             const keydownHandler = e => keys[e.key] = true; const keyupHandler = e => keys[e.key] = false;
             document.addEventListener('keydown', keydownHandler); document.addEventListener('keyup', keyupHandler);
             const gameLoop = () => {
@@ -550,17 +1769,77 @@
 
                 ctx.drawImage(playerShipImage, player.x, player.y, player.width, player.height);
                 
-                dataPackets.forEach((p, i) => { p.y += 2.5; ctx.fillStyle = '#00ffff'; ctx.shadowColor = '#00ffff'; ctx.shadowBlur=15; ctx.fillRect(p.x, p.y, 10, 10); ctx.shadowBlur=0; if(p.y > canvas.height) dataPackets.splice(i,1); if(p.x < player.x+player.width && p.x+10 > player.x && p.y < player.y+player.height && p.y+10 > player.y){dataPackets.splice(i,1); collected++; playSound('collect'); createParticles(p.x, p.y, 20, '#00ffff'); if (collected === 4 || collected === 8) { if (!document.getElementById('mars-info-overlay')) { createPlanetInfoOverlay('mars', 'mars-minigame-screen'); } } } });
-                obstacles.forEach((o, i) => { o.y += 3.5; ctx.fillStyle = '#ff5050'; ctx.shadowColor = '#ff5050'; ctx.shadowBlur=15; ctx.beginPath(); ctx.moveTo(o.x, o.y); ctx.lineTo(o.x+15, o.y+5); ctx.lineTo(o.x+5, o.y+15); ctx.closePath(); ctx.fill(); ctx.shadowBlur=0; if(o.y > canvas.height) obstacles.splice(i,1); if(o.x < player.x+player.width && o.x+15 > player.x && o.y < player.y+player.height && o.y+15 > player.y){playSound('hit'); createParticles(o.x, o.y, 20, '#ff5050'); cleanup(false);} });
+                dataPackets.forEach((p, i) => { p.y += 2.5; ctx.fillStyle = '#00ffff'; ctx.shadowColor = '#00ffff'; ctx.shadowBlur=15; ctx.fillRect(p.x, p.y, 10, 10); ctx.shadowBlur=0; if(p.y > canvas.height) dataPackets.splice(i,1); if(p.x < player.x+player.width && p.x+10 > player.x && p.y < player.y+player.height && p.y+10 > player.y){dataPackets.splice(i,1); collected++; playSound('collect'); createParticles(p.x, p.y, 20, '#00ffff'); if (collected === 4 || collected === 8 || collected === 12) { 
+                            const fragmentIndex = collected === 4 ? 0 : collected === 8 ? 1 : 2;
+                            if (!document.getElementById('mars-info-overlay')) { 
+                                createPlanetInfoOverlay('mars', 'mars-minigame-screen', fragmentIndex); 
+                            } 
+                        } } });
+                obstacles.forEach((o, i) => { o.y += 3.5; ctx.fillStyle = '#ff5050'; ctx.shadowColor = '#ff5050'; ctx.shadowBlur=15; ctx.beginPath(); ctx.moveTo(o.x, o.y); ctx.lineTo(o.x+15, o.y+5); ctx.lineTo(o.x+5, o.y+15); ctx.closePath(); ctx.fill(); ctx.shadowBlur=0; if(o.y > canvas.height) obstacles.splice(i,1); if(o.x < player.x+player.width && o.x+15 > player.x && o.y < player.y+player.height && o.y+15 > player.y){playSound('hit'); createParticles(o.x, o.y, 20, '#ff5050'); 
+                    if (!usedSecondChance) {
+                        usedSecondChance = true;
+                        showSecondChanceQuestion('mars', 'mars-minigame-screen', 
+                            () => { obstacles.splice(i,1); timer += 10; timerEl.textContent = timer; },
+                            () => cleanup(false)
+                        );
+                    } else {
+                        cleanup(false);
+                    }
+                } });
                 
                 updateAndDrawParticles(ctx);
                 packetsCollectedEl.textContent = collected; if(collected >= goal) cleanup(true);
             };
-            const gameInterval = setInterval(gameLoop, 1000/60); const packetInterval = setInterval(() => dataPackets.push({x:Math.random()*canvas.width, y:-10}), 700); const obstacleInterval = setInterval(() => obstacles.push({x:Math.random()*canvas.width, y:-10}), 1000); const timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; if(timer <= 0) cleanup(false); }, 1000);
+            let paused = false;
+            let gameInterval, packetInterval, obstacleInterval, timerInterval;
+            function pauseGameTimers() {
+                if (!paused) {
+                    clearInterval(gameInterval); clearInterval(packetInterval); clearInterval(obstacleInterval); clearInterval(timerInterval); paused = true;
+                }
+            }
+            function resumeGameTimers() {
+                if (paused) {
+                    gameInterval = setInterval(gameLoop, 1000/60);
+                    packetInterval = setInterval(() => dataPackets.push({x:Math.random()*canvas.width, y:-10}), 700);
+                    obstacleInterval = setInterval(() => obstacles.push({x:Math.random()*canvas.width, y:-10}), 1000);
+                    timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; 
+                        if(timer <= 0) {
+                            if (!usedSecondChance) {
+                                usedSecondChance = true;
+                                showSecondChanceQuestion('mars', 'mars-minigame-screen', 
+                                    () => { timer = 15; timerEl.textContent = timer; },
+                                    () => cleanup(false)
+                                );
+                            } else {
+                                cleanup(false);
+                            }
+                        }
+                    }, 1000);
+                    paused = false;
+                }
+            }
+            window.pauseGameTimers = pauseGameTimers;
+            window.resumeGameTimers = resumeGameTimers;
+            gameInterval = setInterval(gameLoop, 1000/60);
+            packetInterval = setInterval(() => dataPackets.push({x:Math.random()*canvas.width, y:-10}), 700);
+            obstacleInterval = setInterval(() => obstacles.push({x:Math.random()*canvas.width, y:-10}), 1000);
+            timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; 
+                if(timer <= 0) {
+                    if (!usedSecondChance) {
+                        usedSecondChance = true;
+                        showSecondChanceQuestion('mars', 'mars-minigame-screen', 
+                            () => { timer = 15; timerEl.textContent = timer; },
+                            () => cleanup(false)
+                        );
+                    } else {
+                        cleanup(false);
+                    }
+                }
+            }, 1000);
             const cleanup = (success, silent = false) => {
                 clearInterval(gameInterval); clearInterval(packetInterval); clearInterval(obstacleInterval); clearInterval(timerInterval);
                 document.removeEventListener('keydown', keydownHandler); document.removeEventListener('keyup', keyupHandler); activeGameCleanup = null;
-                if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 50; celestialBodies.mars.isComplete = true; showDataRecovered('mars'); }); } else { switchScreen('map'); }
+                if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 50; celestialBodies.mars.isComplete = true; showDataRecovered('mars'); }); } else { showFailureIndicator(canvas, 'Mars', () => switchScreen('map')); }
             };
             activeGameCleanup = cleanup;
         }
@@ -570,7 +1849,7 @@
              switchScreen('jupiterMinigame');
              const canvas = document.getElementById('jupiter-canvas'); const ctx = canvas.getContext('2d');
              const shieldEl = document.getElementById('jupiter-shield'); const timerEl = document.getElementById('jupiter-timer');
-             let player = { x: 50, y: canvas.height/2-10, width: 20, height: 25 }; let bolts = [], shield = 100, timer = 35, isShielding = false;
+             let player = { x: 50, y: canvas.height/2-10, width: 20, height: 25 }; let bolts = [], shield = 100, timer = 35, isShielding = false, usedSecondChance = false;
              const keydownHandler = e => { if(e.code === 'Space' && shield > 0) isShielding = true; }; const keyupHandler = e => { if(e.code === 'Space') isShielding = false; };
              document.addEventListener('keydown', keydownHandler); document.addEventListener('keyup', keyupHandler);
              const gameLoop = () => {
@@ -597,11 +1876,54 @@
 
                     if(b.x < -b.w) bolts.splice(i,1); 
                     const hit = b.x < player.x+player.width && b.x+b.w > player.x && b.y > player.y && b.y < player.y + player.height;
-                    if(hit && !isShielding){ playSound('hit'); cleanup(false); } else if (hit && isShielding) { bolts.splice(i,1); playSound('click'); }
+                    if(hit && !isShielding){ 
+                        playSound('hit'); 
+                        if (!usedSecondChance) {
+                            usedSecondChance = true;
+                            showSecondChanceQuestion('jupiter', 'jupiter-minigame-screen', 
+                                () => { shield = 50; bolts.splice(i,1); shieldEl.textContent = Math.floor(shield); },
+                                () => cleanup(false)
+                            );
+                        } else {
+                            cleanup(false);
+                        }
+                    } else if (hit && isShielding) { bolts.splice(i,1); playSound('click'); }
                 });
              };
-            const gameInterval = setInterval(gameLoop, 1000/60); 
-            const boltInterval = setInterval(() => {
+            let paused = false;
+            let gameInterval, boltInterval, timerInterval;
+            function pauseGameTimers() {
+                if (!paused) {
+                    clearInterval(gameInterval); clearInterval(boltInterval); clearInterval(timerInterval); paused = true;
+                }
+            }
+            function resumeGameTimers() {
+                if (paused) {
+                    gameInterval = setInterval(gameLoop, 1000/60);
+                    boltInterval = setInterval(() => {
+                        const bolt = {x:canvas.width, y:Math.random()*canvas.height, w:Math.random()*40+30, segments: []};
+                        let lastY = 0;
+                        for(let i=0; i<5; i++){
+                            lastY += (Math.random()-0.5)*10;
+                            bolt.segments.push({x: i * (bolt.w/5), y: lastY });
+                        }
+                        bolts.push(bolt);
+                    }, 1200);
+                    timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; 
+                        if (timer === 25 || timer === 15 || timer === 8) { 
+                            const fragmentIndex = timer === 25 ? 0 : timer === 15 ? 1 : 2;
+                            if (!document.getElementById('jupiter-info-overlay')) { 
+                                createPlanetInfoOverlay('jupiter', 'jupiter-minigame-screen', fragmentIndex); 
+                            } 
+                        } 
+                        if(timer <= 0) cleanup(true); }, 1000);
+                    paused = false;
+                }
+            }
+            window.pauseGameTimers = pauseGameTimers;
+            window.resumeGameTimers = resumeGameTimers;
+            gameInterval = setInterval(gameLoop, 1000/60); 
+            boltInterval = setInterval(() => {
                 const bolt = {x:canvas.width, y:Math.random()*canvas.height, w:Math.random()*40+30, segments: []};
                 let lastY = 0;
                 for(let i=0; i<5; i++){
@@ -609,11 +1931,18 @@
                     bolt.segments.push({x: i * (bolt.w/5), y: lastY });
                 }
                 bolts.push(bolt);
-            }, 400); 
-            const timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; if (timer === 25 || timer === 15) { if (!document.getElementById('jupiter-info-overlay')) { createPlanetInfoOverlay('jupiter', 'jupiter-minigame-screen'); } } if(timer <= 0) cleanup(true); }, 1000);
+            }, 1200);
+            timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; 
+                if (timer === 25 || timer === 15 || timer === 8) { 
+                    const fragmentIndex = timer === 25 ? 0 : timer === 15 ? 1 : 2;
+                    if (!document.getElementById('jupiter-info-overlay')) { 
+                        createPlanetInfoOverlay('jupiter', 'jupiter-minigame-screen', fragmentIndex); 
+                    } 
+                } 
+                if(timer <= 0) cleanup(true); }, 1000);
             const cleanup = (success, silent = false) => {
                  clearInterval(gameInterval); clearInterval(boltInterval); clearInterval(timerInterval); document.removeEventListener('keydown', keydownHandler); document.removeEventListener('keyup', keyupHandler); activeGameCleanup = null;
-                 if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 100; celestialBodies.jupiter.isComplete = true; showDataRecovered('jupiter'); }); } else { switchScreen('map'); }
+                 if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 100; celestialBodies.jupiter.isComplete = true; showDataRecovered('jupiter'); }); } else { showFailureIndicator(canvas, 'Jupiter', () => switchScreen('map')); }
             };
             activeGameCleanup = cleanup;
         }
@@ -624,7 +1953,7 @@
             const canvas = document.getElementById('saturn-canvas'); const ctx = canvas.getContext('2d');
             const gapsEl = document.getElementById('saturn-gaps'); const hullEl = document.getElementById('saturn-hull');
             let player = { x: 50, y: canvas.height / 2 - 10, width: 20, height: 25, speed: 5 };
-            let keys = {}, rings = [], gapsCleared = 0, hull = 100, goal = 12;
+            let keys = {}, rings = [], gapsCleared = 0, hull = 100, goal = 12, usedSecondChance = false;
             const keydownHandler = e => keys[e.key] = true; const keyupHandler = e => keys[e.key] = false;
             document.addEventListener('keydown', keydownHandler); document.addEventListener('keyup', keyupHandler);
             const gameLoop = () => {
@@ -639,16 +1968,62 @@
                     ctx.globalAlpha = 1;
 
                     if (r.x + r.width < 0) { rings.splice(i, 1); }
-                    if (r.isGap && r.x + r.width < player.x && !r.passed) { r.passed = true; gapsCleared++; gapsEl.textContent = `${gapsCleared}/${goal}`; playSound('correct'); if (gapsCleared === 3 || gapsCleared === 6 || gapsCleared === 9) { if (!document.getElementById('saturn-info-overlay')) { createPlanetInfoOverlay('saturn', 'saturn-minigame-screen'); } } }
+                    if (r.isGap && r.x + r.width < player.x && !r.passed) { r.passed = true; gapsCleared++; gapsEl.textContent = `${gapsCleared}/${goal}`; playSound('correct'); if (gapsCleared === 3 || gapsCleared === 6 || gapsCleared === 9) { 
+                        const fragmentIndex = gapsCleared === 3 ? 0 : gapsCleared === 6 ? 1 : 2;
+                        if (!document.getElementById('saturn-info-overlay')) { 
+                            createPlanetInfoOverlay('saturn', 'saturn-minigame-screen', fragmentIndex); 
+                        } 
+                    } }
                     
                     const hit = !r.isGap && player.x + player.width > r.x && player.x < r.x + r.width && player.y + player.height > r.y && player.y < r.y + r.height;
-                    if(hit) { hull -= 25; hullEl.textContent = `${hull}%`; playSound('hit'); createParticles(player.x, player.y, 20, '#ffaa00'); rings.splice(i,1); if(hull <=0) cleanup(false); }
+                    if(hit) { 
+                        hull -= 25; hullEl.textContent = `${hull}%`; playSound('hit'); createParticles(player.x, player.y, 20, '#ffaa00'); rings.splice(i,1); 
+                        if(hull <= 0) {
+                            if (!usedSecondChance) {
+                                usedSecondChance = true;
+                                showSecondChanceQuestion('saturn', 'saturn-minigame-screen', 
+                                    () => { hull = 50; hullEl.textContent = `${hull}%`; },
+                                    () => cleanup(false)
+                                );
+                            } else {
+                                cleanup(false);
+                            }
+                        }
+                    }
                 });
                 updateAndDrawParticles(ctx);
                 if (gapsCleared >= goal) cleanup(true);
             };
-            const gameInterval = setInterval(gameLoop, 1000/60); 
-            const ringInterval = setInterval(() => {
+            let paused = false;
+            let gameInterval, ringInterval;
+            function pauseGameTimers() {
+                if (!paused) {
+                    clearInterval(gameInterval); clearInterval(ringInterval); paused = true;
+                }
+            }
+            function resumeGameTimers() {
+                if (paused) {
+                    gameInterval = setInterval(gameLoop, 1000/60);
+                    ringInterval = setInterval(() => {
+                        const gapY = Math.random()*(canvas.height-110);
+                        const gapHeight = 110;
+                        let lastGap = false;
+                        for(let i=0; i<canvas.height; i+=10){
+                            if (i < gapY || i > gapY + gapHeight) {
+                                rings.push({ x: canvas.width, y: i, width: Math.random()*15+10, height: 8, alpha: Math.random()*0.5+0.3 });
+                            } else if (!lastGap) {
+                                rings.push({x: canvas.width, isGap:true, passed: false, width: 25});
+                                lastGap = true;
+                            }
+                        }
+                    }, 1800);
+                    paused = false;
+                }
+            }
+            window.pauseGameTimers = pauseGameTimers;
+            window.resumeGameTimers = resumeGameTimers;
+            gameInterval = setInterval(gameLoop, 1000/60); 
+            ringInterval = setInterval(() => {
                 const gapY = Math.random()*(canvas.height-110);
                 const gapHeight = 110;
                 let lastGap = false;
@@ -663,12 +2038,939 @@
             }, 1800);
             const cleanup = (success, silent = false) => {
                 clearInterval(gameInterval); clearInterval(ringInterval); document.removeEventListener('keydown', keydownHandler); document.removeEventListener('keyup', keyupHandler); activeGameCleanup = null;
-                if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 75; celestialBodies.saturn.isComplete = true; showDataRecovered('saturn'); }); } else { switchScreen('map'); }
+                if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 75; celestialBodies.saturn.isComplete = true; showDataRecovered('saturn'); }); } else { showFailureIndicator(canvas, 'Saturn', () => switchScreen('map')); }
+            };
+            activeGameCleanup = cleanup;
+        }
+
+        // --- VENUS MINIGAME ---
+        function launchVenusMinigame() {
+            switchScreen('venusMinigame');
+            const canvas = document.getElementById('venus-canvas'); const ctx = canvas.getContext('2d');
+            const shieldEl = document.getElementById('venus-shield'); const timerEl = document.getElementById('venus-timer');
+            let player = { x: canvas.width/2-10, y: canvas.height/2-10, width: 20, height: 25 };
+            let keys = {}, acidDrops = [], shield = 100, timer = 40, isShielding = false, usedSecondChance = false;
+            const keydownHandler = e => { if(e.code === 'Space' && shield > 0) isShielding = true; };
+            const keyupHandler = e => { if(e.code === 'Space') isShielding = false; };
+            document.addEventListener('keydown', keydownHandler); document.addEventListener('keyup', keyupHandler);
+            
+            const gameLoop = () => {
+                if(isShielding) { shield -= 1.2; if(shield < 0) { shield=0; isShielding=false; } } else if(shield < 100) { shield += 0.3; }
+                shieldEl.textContent = Math.floor(shield);
+                
+                ctx.fillStyle = 'rgba(255, 140, 0, 0.1)'; ctx.fillRect(0,0,canvas.width, canvas.height);
+                ctx.drawImage(playerShipImage, player.x, player.y, player.width, player.height);
+
+                if(isShielding) {
+                    const shieldGradient = ctx.createRadialGradient(player.x+player.width/2, player.y+player.height/2, 15, player.x+player.width/2, player.y+player.height/2, 30);
+                    shieldGradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+                    shieldGradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                    ctx.fillStyle = shieldGradient;
+                    ctx.beginPath(); ctx.arc(player.x+player.width/2, player.y+player.height/2, 30, 0, Math.PI*2); ctx.fill();
+                }
+
+                acidDrops.forEach((drop, i) => {
+                    drop.y += drop.speed; drop.x += Math.sin(drop.y * 0.02) * 2;
+                    ctx.fillStyle = '#32cd32'; ctx.shadowColor = '#32cd32'; ctx.shadowBlur = 10;
+                    ctx.beginPath(); ctx.arc(drop.x, drop.y, drop.size, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+                    
+                    if(drop.y > canvas.height) acidDrops.splice(i,1);
+                    const hit = drop.x > player.x && drop.x < player.x+player.width && drop.y > player.y && drop.y < player.y+player.height;
+                    if(hit && !isShielding) { 
+                        acidDrops.splice(i,1); playSound('hit'); 
+                        if (!usedSecondChance) {
+                            usedSecondChance = true;
+                            showSecondChanceQuestion('venus', 'venus-minigame-screen', 
+                                () => { shield = 50; shieldEl.textContent = Math.floor(shield); },
+                                () => cleanup(false)
+                            );
+                        } else {
+                            cleanup(false);
+                        }
+                    }
+                    else if(hit && isShielding) { acidDrops.splice(i,1); playSound('click'); }
+                });
+                updateAndDrawParticles(ctx);
+            };
+
+            let paused = false;
+            let gameInterval, dropInterval, timerInterval;
+            function pauseGameTimers() {
+                if (!paused) {
+                    clearInterval(gameInterval); clearInterval(dropInterval); clearInterval(timerInterval); paused = true;
+                }
+            }
+            function resumeGameTimers() {
+                if (paused) {
+                    gameInterval = setInterval(gameLoop, 1000/60);
+                    dropInterval = setInterval(() => acidDrops.push({x:Math.random()*canvas.width, y:-10, speed:Math.random()*3+2, size:Math.random()*4+3}), 200);
+                    timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; 
+                        if (timer === 25 || timer === 15 || timer === 8) { 
+                            const fragmentIndex = timer === 25 ? 0 : timer === 15 ? 1 : 2;
+                            if (!document.getElementById('venus-info-overlay')) { 
+                                createPlanetInfoOverlay('venus', 'venus-minigame-screen', fragmentIndex); 
+                            } 
+                        } 
+                        if(timer <= 0) cleanup(true); }, 1000);
+                    paused = false;
+                }
+            }
+            window.pauseGameTimers = pauseGameTimers;
+            window.resumeGameTimers = resumeGameTimers;
+            gameInterval = setInterval(gameLoop, 1000/60);
+            dropInterval = setInterval(() => acidDrops.push({x:Math.random()*canvas.width, y:-10, speed:Math.random()*3+2, size:Math.random()*4+3}), 200);
+            timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; 
+                if (timer === 25 || timer === 15 || timer === 8) { 
+                    const fragmentIndex = timer === 25 ? 0 : timer === 15 ? 1 : 2;
+                    if (!document.getElementById('venus-info-overlay')) { 
+                        createPlanetInfoOverlay('venus', 'venus-minigame-screen', fragmentIndex); 
+                    } 
+                } 
+                if(timer <= 0) cleanup(true); }, 1000);
+            const cleanup = (success, silent = false) => {
+                clearInterval(gameInterval); clearInterval(dropInterval); clearInterval(timerInterval);
+                document.removeEventListener('keydown', keydownHandler); document.removeEventListener('keyup', keyupHandler); activeGameCleanup = null;
+                if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 80; celestialBodies.venus.isComplete = true; showDataRecovered('venus'); }); } else { showFailureIndicator(canvas, 'Venus', () => switchScreen('map')); }
+            };
+            activeGameCleanup = cleanup;
+        }
+
+        // --- EARTH MINIGAME ---
+        function launchEarthMinigame() {
+            switchScreen('earthMinigame');
+            const canvas = document.getElementById('earth-canvas'); const ctx = canvas.getContext('2d');
+            const satellitesEl = document.getElementById('earth-satellites'); const timerEl = document.getElementById('earth-timer');
+            let player = { x: 50, y: canvas.height/2-10, width: 20, height: 25, speed: 4 };
+            let keys = {}, satellites = [], debris = [], fixed = 0, timer = 45, goal = 8, usedSecondChance = false;
+            const keydownHandler = e => keys[e.key] = true; const keyupHandler = e => keys[e.key] = false;
+            document.addEventListener('keydown', keydownHandler); document.addEventListener('keyup', keyupHandler);
+
+            const gameLoop = () => {
+                if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+                if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += player.speed;
+                if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
+                if (keys['ArrowDown'] && player.y < canvas.height - player.height) player.y += player.speed;
+                
+                ctx.fillStyle = 'rgba(0, 0, 30, 0.3)'; ctx.fillRect(0,0,canvas.width, canvas.height);
+                ctx.drawImage(playerShipImage, player.x, player.y, player.width, player.height);
+
+                satellites.forEach((sat, i) => {
+                    if (sat.broken) {
+                        ctx.fillStyle = '#ff4444'; ctx.shadowColor = '#ff4444'; ctx.shadowBlur = 15;
+                        ctx.fillRect(sat.x, sat.y, 15, 15); ctx.shadowBlur = 0;
+                        const hit = player.x < sat.x+15 && player.x+player.width > sat.x && player.y < sat.y+15 && player.y+player.height > sat.y;
+                        if(hit) { sat.broken = false; fixed++; satellitesEl.textContent = `${fixed}/${goal}`; playSound('correct'); createParticles(sat.x, sat.y, 15, '#00ff00'); if (fixed === 3 || fixed === 6 || fixed === 9) { 
+                            const fragmentIndex = fixed === 3 ? 0 : fixed === 6 ? 1 : 2;
+                            if (!document.getElementById('earth-info-overlay')) { 
+                                createPlanetInfoOverlay('earth', 'earth-minigame-screen', fragmentIndex); 
+                            } 
+                        } }
+                    } else {
+                        ctx.fillStyle = '#00ff00'; ctx.shadowColor = '#00ff00'; ctx.shadowBlur = 10;
+                        ctx.fillRect(sat.x, sat.y, 15, 15); ctx.shadowBlur = 0;
+                    }
+                });
+
+                debris.forEach((d, i) => {
+                    d.x -= d.speed; d.y += Math.sin(d.x * 0.01) * 2;
+                    ctx.fillStyle = '#888'; ctx.fillRect(d.x, d.y, d.size, d.size);
+                    if(d.x < -d.size) debris.splice(i,1);
+                    const hit = player.x < d.x+d.size && player.x+player.width > d.x && player.y < d.y+d.size && player.y+player.height > d.y;
+                    if(hit) { 
+                        playSound('hit'); 
+                        if (!usedSecondChance) {
+                            usedSecondChance = true;
+                            showSecondChanceQuestion('earth', 'earth-minigame-screen', 
+                                () => { debris.splice(i,1); timer += 10; timerEl.textContent = timer; },
+                                () => cleanup(false)
+                            );
+                        } else {
+                            cleanup(false);
+                        }
+                    }
+                });
+                updateAndDrawParticles(ctx);
+                if(fixed >= goal) cleanup(true);
+            };
+
+            for(let i=0; i<goal; i++) satellites.push({x:Math.random()*(canvas.width-100)+100, y:Math.random()*(canvas.height-50)+25, broken:true});
+
+            let paused = false;
+            let gameInterval, debrisInterval, timerInterval;
+            function pauseGameTimers() {
+                if (!paused) {
+                    clearInterval(gameInterval); clearInterval(debrisInterval); clearInterval(timerInterval); paused = true;
+                }
+            }
+            function resumeGameTimers() {
+                if (paused) {
+                    gameInterval = setInterval(gameLoop, 1000/60);
+                    debrisInterval = setInterval(() => debris.push({x:canvas.width, y:Math.random()*canvas.height, speed:Math.random()*2+2, size:Math.random()*8+5}), 800);
+                    timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; if(timer <= 0) cleanup(false); }, 1000);
+                    paused = false;
+                }
+            }
+            window.pauseGameTimers = pauseGameTimers;
+            window.resumeGameTimers = resumeGameTimers;
+            gameInterval = setInterval(gameLoop, 1000/60);
+            debrisInterval = setInterval(() => debris.push({x:canvas.width, y:Math.random()*canvas.height, speed:Math.random()*2+2, size:Math.random()*8+5}), 800);
+            timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; if(timer <= 0) cleanup(false); }, 1000);
+            const cleanup = (success, silent = false) => {
+                clearInterval(gameInterval); clearInterval(debrisInterval); clearInterval(timerInterval);
+                document.removeEventListener('keydown', keydownHandler); document.removeEventListener('keyup', keyupHandler); activeGameCleanup = null;
+                if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 90; celestialBodies.earth.isComplete = true; showDataRecovered('earth'); }); } else { showFailureIndicator(canvas, 'Earth', () => switchScreen('map')); }
+            };
+            activeGameCleanup = cleanup;
+        }
+
+        // --- URANUS MINIGAME ---
+        function launchUranusMinigame() {
+            switchScreen('uranusMinigame');
+            const canvas = document.getElementById('uranus-canvas'); const ctx = canvas.getContext('2d');
+            const crystalsEl = document.getElementById('uranus-crystals'); const timerEl = document.getElementById('uranus-timer');
+            let player = { angle: 0, radius: 180, size: 20, speed: 0.03 };
+            let keys = {}, crystals = [], collected = 0, timer = 50, goal = 15, planetRotation = 0, usedSecondChance = false;
+            const keydownHandler = e => { if(e.key === 'a' || e.key === 'A') keys.left = true; if(e.key === 'd' || e.key === 'D') keys.right = true; };
+            const keyupHandler = e => { if(e.key === 'a' || e.key === 'A') keys.left = false; if(e.key === 'd' || e.key === 'D') keys.right = false; };
+            document.addEventListener('keydown', keydownHandler); document.addEventListener('keyup', keyupHandler);
+
+            const gameLoop = () => {
+                if (keys.left) player.angle -= player.speed;
+                if (keys.right) player.angle += player.speed;
+                planetRotation += 0.01;
+                
+                ctx.fillStyle = 'rgba(0, 20, 50, 0.2)'; ctx.fillRect(0,0,canvas.width, canvas.height);
+                const centerX = canvas.width/2, centerY = canvas.height/2;
+                
+                // Draw rotating Uranus
+                ctx.save(); ctx.translate(centerX, centerY); ctx.rotate(planetRotation);
+                ctx.fillStyle = '#4fd0e7'; ctx.beginPath(); ctx.arc(0, 0, 80, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = '#3fb8d3'; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.ellipse(0, 0, 20, 80, 0, 0, Math.PI*2); ctx.stroke();
+                ctx.beginPath(); ctx.ellipse(0, 0, 35, 80, 0, 0, Math.PI*2); ctx.stroke(); ctx.restore();
+
+                // Draw player
+                const playerX = centerX + Math.cos(player.angle) * player.radius;
+                const playerY = centerY + Math.sin(player.angle) * player.radius;
+                ctx.drawImage(playerShipImage, playerX - player.size/2, playerY - player.size/2, player.size, player.size * 1.25);
+
+                crystals.forEach((crystal, i) => {
+                    crystal.angle += crystal.speed; crystal.pulse += 0.1;
+                    const crystalX = centerX + Math.cos(crystal.angle) * crystal.radius;
+                    const crystalY = centerY + Math.sin(crystal.angle) * crystal.radius;
+                    const size = crystal.size + Math.sin(crystal.pulse) * 2;
+                    ctx.fillStyle = `rgba(135, 206, 235, ${0.8 + Math.sin(crystal.pulse) * 0.2})`;
+                    ctx.shadowColor = '#87ceeb'; ctx.shadowBlur = 15;
+                    ctx.beginPath(); ctx.arc(crystalX, crystalY, size, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+                    
+                    const dist = Math.sqrt((playerX - crystalX)**2 + (playerY - crystalY)**2);
+                    if(dist < player.size/2 + size) {
+                        crystals.splice(i,1); collected++; crystalsEl.textContent = `${collected}/${goal}`;
+                        playSound('collect'); createParticles(crystalX, crystalY, 20, '#87ceeb');
+                        if (collected === 5 || collected === 10 || collected === 15) { 
+                            const fragmentIndex = collected === 5 ? 0 : collected === 10 ? 1 : 2;
+                            if (!document.getElementById('uranus-info-overlay')) { 
+                                createPlanetInfoOverlay('uranus', 'uranus-minigame-screen', fragmentIndex); 
+                            } 
+                        }
+                    }
+                });
+                updateAndDrawParticles(ctx);
+                if(collected >= goal) cleanup(true);
+            };
+
+            let paused = false;
+            let gameInterval, crystalInterval, timerInterval;
+            function pauseGameTimers() {
+                if (!paused) {
+                    clearInterval(gameInterval); clearInterval(crystalInterval); clearInterval(timerInterval); paused = true;
+                }
+            }
+            function resumeGameTimers() {
+                if (paused) {
+                    gameInterval = setInterval(gameLoop, 1000/60);
+                    crystalInterval = setInterval(() => crystals.push({angle:Math.random()*Math.PI*2, radius:Math.random()*60+140, speed:Math.random()*0.02+0.01, size:Math.random()*4+6, pulse:0}), 1000);
+                    timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; 
+                        if(timer <= 0) {
+                            if (!usedSecondChance) {
+                                usedSecondChance = true;
+                                showSecondChanceQuestion('uranus', 'uranus-minigame-screen', 
+                                    () => { timer = 20; timerEl.textContent = timer; },
+                                    () => cleanup(false)
+                                );
+                            } else {
+                                cleanup(false);
+                            }
+                        }
+                    }, 1000);
+                    paused = false;
+                }
+            }
+            window.pauseGameTimers = pauseGameTimers;
+            window.resumeGameTimers = resumeGameTimers;
+            gameInterval = setInterval(gameLoop, 1000/60);
+            crystalInterval = setInterval(() => crystals.push({angle:Math.random()*Math.PI*2, radius:Math.random()*60+140, speed:Math.random()*0.02+0.01, size:Math.random()*4+6, pulse:0}), 1000);
+            timerInterval = setInterval(() => { timer--; timerEl.textContent = timer; 
+                if(timer <= 0) {
+                    if (!usedSecondChance) {
+                        usedSecondChance = true;
+                        showSecondChanceQuestion('uranus', 'uranus-minigame-screen', 
+                            () => { timer = 20; timerEl.textContent = timer; },
+                            () => cleanup(false)
+                        );
+                    } else {
+                        cleanup(false);
+                    }
+                }
+            }, 1000);
+            const cleanup = (success, silent = false) => {
+                clearInterval(gameInterval); clearInterval(crystalInterval); clearInterval(timerInterval);
+                document.removeEventListener('keydown', keydownHandler); document.removeEventListener('keyup', keyupHandler); activeGameCleanup = null;
+                if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 85; celestialBodies.uranus.isComplete = true; showDataRecovered('uranus'); }); } else { showFailureIndicator(canvas, 'Uranus', () => switchScreen('map')); }
+            };
+            activeGameCleanup = cleanup;
+        }
+
+        // --- NEPTUNE MINIGAME ---
+        function launchNeptuneMinigame() {
+            switchScreen('neptuneMinigame');
+            const canvas = document.getElementById('neptune-canvas'); const ctx = canvas.getContext('2d');
+            const distanceEl = document.getElementById('neptune-distance'); const hullEl = document.getElementById('neptune-hull');
+            let player = { x: 50, y: canvas.height/2-10, width: 20, height: 25, speed: 3, vx: 0, vy: 0 };
+            let keys = {}, winds = [], distance = 100, hull = 100, windForce = { x: 0, y: 0 };
+            const keydownHandler = e => keys[e.key] = true; const keyupHandler = e => keys[e.key] = false;
+            document.addEventListener('keydown', keydownHandler); document.addEventListener('keyup', keyupHandler);
+
+            const gameLoop = () => {
+                let thrustX = 0, thrustY = 0;
+                if (keys['ArrowLeft']) thrustX = -player.speed;
+                if (keys['ArrowRight']) thrustX = player.speed;
+                if (keys['ArrowUp']) thrustY = -player.speed;
+                if (keys['ArrowDown']) thrustY = player.speed;
+
+                // Wind affects movement
+                windForce.x = Math.sin(Date.now() * 0.003) * 2;
+                windForce.y = Math.cos(Date.now() * 0.002) * 1.5;
+                
+                player.vx = (thrustX + windForce.x) * 0.8;
+                player.vy = (thrustY + windForce.y) * 0.8;
+                player.x += player.vx; player.y += player.vy;
+                
+                if(player.x < 0) player.x = 0; if(player.x > canvas.width-player.width) player.x = canvas.width-player.width;
+                if(player.y < 0) player.y = 0; if(player.y > canvas.height-player.height) player.y = canvas.height-player.height;
+
+                ctx.fillStyle = 'rgba(30, 60, 150, 0.3)'; ctx.fillRect(0,0,canvas.width, canvas.height);
+                
+                // Draw wind currents
+                for(let i = 0; i < 50; i++) {
+                    const x = (Date.now() * 0.1 + i * 30) % canvas.width;
+                    const y = Math.sin(x * 0.01 + Date.now() * 0.002) * 50 + canvas.height/2;
+                    ctx.fillStyle = `rgba(100, 150, 255, 0.3)`;
+                    ctx.fillRect(x, y, 20, 2);
+                }
+
+                ctx.drawImage(playerShipImage, player.x, player.y, player.width, player.height);
+
+                winds.forEach((wind, i) => {
+                    wind.x -= wind.speed; wind.y += Math.sin(wind.x * 0.02) * 3;
+                    ctx.strokeStyle = '#4169e1'; ctx.lineWidth = 3; ctx.globalAlpha = 0.7;
+                    ctx.beginPath(); ctx.moveTo(wind.x, wind.y);
+                    for(let j = 1; j < 5; j++) {
+                        ctx.lineTo(wind.x + j * 15, wind.y + Math.sin((wind.x + j * 15) * 0.02) * 10);
+                    }
+                    ctx.stroke(); ctx.globalAlpha = 1;
+                    
+                    if(wind.x < -100) winds.splice(i,1);
+                    const hit = player.x < wind.x+60 && player.x+player.width > wind.x && player.y < wind.y+30 && player.y+player.height > wind.y-10;
+                    if(hit) { hull -= 15; hullEl.textContent = `${hull}%`; playSound('hit'); winds.splice(i,1); createParticles(player.x, player.y, 25, '#4169e1'); if(hull <= 0) cleanup(false); }
+                });
+
+                // Progress toward core
+                if(thrustX > 0) distance -= 0.5;
+                distance = Math.max(0, distance);
+                distanceEl.textContent = `${Math.floor(distance)}%`;
+                updateAndDrawParticles(ctx);
+                if(distance <= 0) cleanup(true);
+            };
+
+            let paused = false;
+            let gameInterval, windInterval, milestoneInterval;
+            let milestone70Shown = false, milestone30Shown = false, milestone10Shown = false;
+            function pauseGameTimers() {
+                if (!paused) {
+                    clearInterval(gameInterval); clearInterval(windInterval); clearInterval(milestoneInterval); paused = true;
+                }
+            }
+            function resumeGameTimers() {
+                if (paused) {
+                    gameInterval = setInterval(gameLoop, 1000/60);
+                    windInterval = setInterval(() => winds.push({x:canvas.width, y:Math.random()*canvas.height, speed:Math.random()*3+3}), 600);
+                    milestoneInterval = setInterval(() => {
+                        if (distance <= 70 && distance > 65 && !milestone70Shown) { 
+                            milestone70Shown = true; 
+                            createPlanetInfoOverlay('neptune', 'neptune-minigame-screen', 0); 
+                        }
+                        if (distance <= 30 && distance > 25 && !milestone30Shown) { 
+                            milestone30Shown = true; 
+                            createPlanetInfoOverlay('neptune', 'neptune-minigame-screen', 1); 
+                        }
+                        if (distance <= 10 && distance > 5 && !milestone10Shown) { 
+                            milestone10Shown = true; 
+                            createPlanetInfoOverlay('neptune', 'neptune-minigame-screen', 2); 
+                        }
+                    }, 100);
+                    paused = false;
+                }
+            }
+            window.pauseGameTimers = pauseGameTimers;
+            window.resumeGameTimers = resumeGameTimers;
+            gameInterval = setInterval(gameLoop, 1000/60);
+            windInterval = setInterval(() => winds.push({x:canvas.width, y:Math.random()*canvas.height, speed:Math.random()*3+3}), 600);
+            
+            // Show info overlay at milestones
+            milestoneInterval = setInterval(() => {
+                if (distance <= 70 && distance > 65 && !milestone70Shown) { 
+                    milestone70Shown = true; 
+                    createPlanetInfoOverlay('neptune', 'neptune-minigame-screen', 0); 
+                }
+                if (distance <= 30 && distance > 25 && !milestone30Shown) { 
+                    milestone30Shown = true; 
+                    createPlanetInfoOverlay('neptune', 'neptune-minigame-screen', 1); 
+                }
+                if (distance <= 10 && distance > 5 && !milestone10Shown) { 
+                    milestone10Shown = true; 
+                    createPlanetInfoOverlay('neptune', 'neptune-minigame-screen', 2); 
+                }
+            }, 100);
+            
+            const cleanup = (success, silent = false) => {
+                clearInterval(gameInterval); clearInterval(windInterval); clearInterval(milestoneInterval);
+                document.removeEventListener('keydown', keydownHandler); document.removeEventListener('keyup', keyupHandler); activeGameCleanup = null;
+                if(silent) return; if(success) { showWinIndicator(canvas, () => { score += 95; celestialBodies.neptune.isComplete = true; showDataRecovered('neptune'); }); } else { showFailureIndicator(canvas, 'Neptune', () => switchScreen('map')); }
             };
             activeGameCleanup = cleanup;
         }
 
         // Event Listeners
+        
+        // --- SPACESHIP FINAL QUIZ ---
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let shuffledQuizQuestions = [];
+
+        function launchSpaceshipQuiz() {
+            switchScreen('spaceshipQuiz');
+            currentQuizIndex = 0;
+            quizScore = 0;
+            shuffledQuizQuestions = [...finalQuizQuestions].sort(() => Math.random() - 0.5);
+            document.getElementById('total-questions').textContent = shuffledQuizQuestions.length;
+            displayCurrentQuestion();
+        }
+
+        function displayCurrentQuestion() {
+            const question = shuffledQuizQuestions[currentQuizIndex];
+            const quizContent = document.getElementById('quiz-content');
+            const quizControls = document.getElementById('quiz-controls');
+            
+            // Update progress
+            document.getElementById('current-question').textContent = currentQuizIndex + 1;
+            document.getElementById('quiz-score').textContent = quizScore;
+            document.getElementById('progress-bar').style.width = `${(currentQuizIndex / shuffledQuizQuestions.length) * 100}%`;
+            
+            // Clear previous content
+            quizContent.innerHTML = '';
+            quizControls.innerHTML = '';
+            
+            // Display question based on type
+            switch(question.type) {
+                case 'multiple-choice':
+                    displayMultipleChoiceQuestion(question, quizContent, quizControls);
+                    break;
+                case 'true-false':
+                    displayTrueFalseQuestion(question, quizContent, quizControls);
+                    break;
+                case 'fill-in-the-blank':
+                    displayFillInTheBlankQuestion(question, quizContent, quizControls);
+                    break;
+                case 'image-identification':
+                    displayImageIdentificationQuestion(question, quizContent, quizControls);
+                    break;
+                case 'ordering':
+                    displayOrderingQuestion(question, quizContent, quizControls);
+                    break;
+                case 'categorization':
+                    displayCategorizationQuestion(question, quizContent, quizControls);
+                    break;
+                case 'space-matching':
+                    displaySpaceMatchingQuestion(question, quizContent, quizControls);
+                    break;
+                case 'planet-builder':
+                    displayPlanetBuilderQuestion(question, quizContent, quizControls);
+                    break;
+            }
+        }
+
+        function displayMultipleChoiceQuestion(question, content, controls) {
+            content.innerHTML = `
+                <h3 class="text-xl mb-4">${question.question}</h3>
+                <div class="space-y-2">
+                    ${question.answers.map((answer, i) => 
+                        `<button class="quiz-option w-full p-3 bg-gray-700 hover:bg-cyan-600 rounded text-left" data-answer="${i}">
+                            ${String.fromCharCode(65 + i)}. ${answer}
+                        </button>`
+                    ).join('')}
+                </div>
+            `;
+            
+            content.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const selectedAnswer = parseInt(btn.dataset.answer);
+                    const isCorrect = selectedAnswer === question.correct;
+                    handleQuizAnswer(isCorrect, question.explanation);
+                });
+            });
+        }
+
+        function displayTrueFalseQuestion(question, content, controls) {
+            content.innerHTML = `
+                <h3 class="text-xl mb-4">${question.question}</h3>
+                <div class="flex justify-center space-x-4">
+                    <button class="quiz-option px-8 py-4 bg-green-600 hover:bg-green-500 rounded text-xl" data-answer="true">
+                        TRUE
+                    </button>
+                    <button class="quiz-option px-8 py-4 bg-red-600 hover:bg-red-500 rounded text-xl" data-answer="false">
+                        FALSE
+                    </button>
+                </div>
+            `;
+            
+            content.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const selectedAnswer = btn.dataset.answer === 'true';
+                    const isCorrect = selectedAnswer === question.correct;
+                    handleQuizAnswer(isCorrect, question.explanation);
+                });
+            });
+        }
+
+        function displayFillInTheBlankQuestion(question, content, controls) {
+            content.innerHTML = `
+                <h3 class="text-xl mb-4">${question.question}</h3>
+                <div class="flex justify-center">
+                    <input type="text" id="fill-answer" class="px-4 py-2 bg-gray-700 border border-cyan-400 rounded text-white text-center" placeholder="Enter your answer...">
+                </div>
+            `;
+            
+            controls.innerHTML = `
+                <button id="submit-fill" class="btn-primary px-6 py-2 rounded">Submit Answer</button>
+            `;
+            
+            const submitBtn = controls.querySelector('#submit-fill');
+            const answerInput = content.querySelector('#fill-answer');
+            
+            const checkAnswer = () => {
+                const userAnswer = answerInput.value.trim().toLowerCase();
+                const isCorrect = question.correctAnswers.some(correct => 
+                    correct.toLowerCase() === userAnswer
+                );
+                handleQuizAnswer(isCorrect, question.explanation);
+            };
+            
+            submitBtn.addEventListener('click', checkAnswer);
+            answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkAnswer();
+            });
+        }
+
+        function displayImageIdentificationQuestion(question, content, controls) {
+            content.innerHTML = `
+                <div class="text-center mb-4">
+                    <div class="text-6xl mb-4">${question.image}</div>
+                    <h3 class="text-xl">${question.question}</h3>
+                </div>
+                <div class="space-y-2">
+                    ${question.answers.map((answer, i) => 
+                        `<button class="quiz-option w-full p-3 bg-gray-700 hover:bg-cyan-600 rounded text-left" data-answer="${i}">
+                            ${String.fromCharCode(65 + i)}. ${answer}
+                        </button>`
+                    ).join('')}
+                </div>
+            `;
+            
+            content.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const selectedAnswer = parseInt(btn.dataset.answer);
+                    const isCorrect = selectedAnswer === question.correct;
+                    handleQuizAnswer(isCorrect, question.explanation);
+                });
+            });
+        }
+
+        function displayOrderingQuestion(question, content, controls) {
+            let currentOrder = [...question.items];
+            
+            const renderOrdering = () => {
+                content.innerHTML = `
+                    <h3 class="text-xl mb-4">${question.question}</h3>
+                    <p class="text-sm text-gray-400 mb-4">Click the up ⬆️ or down ⬇️ buttons to reorder items</p>
+                    <div class="ordering-container space-y-2">
+                        ${currentOrder.map((item, i) => 
+                            `<div class="ordering-item p-3 bg-gray-700 rounded flex justify-between items-center">
+                                <span>${i + 1}. ${item}</span>
+                                <div class="flex space-x-2">
+                                    <button class="move-up px-2 py-1 bg-cyan-600 rounded text-sm ${i === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-cyan-500'}" data-index="${i}" ${i === 0 ? 'disabled' : ''}>⬆️</button>
+                                    <button class="move-down px-2 py-1 bg-cyan-600 rounded text-sm ${i === currentOrder.length - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-cyan-500'}" data-index="${i}" ${i === currentOrder.length - 1 ? 'disabled' : ''}>⬇️</button>
+                                </div>
+                            </div>`
+                        ).join('')}
+                    </div>
+                `;
+                
+                // Add move up event listeners
+                content.querySelectorAll('.move-up').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const index = parseInt(btn.dataset.index);
+                        if (index > 0) {
+                            [currentOrder[index], currentOrder[index - 1]] = [currentOrder[index - 1], currentOrder[index]];
+                            renderOrdering();
+                        }
+                    });
+                });
+                
+                // Add move down event listeners
+                content.querySelectorAll('.move-down').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const index = parseInt(btn.dataset.index);
+                        if (index < currentOrder.length - 1) {
+                            [currentOrder[index], currentOrder[index + 1]] = [currentOrder[index + 1], currentOrder[index]];
+                            renderOrdering();
+                        }
+                    });
+                });
+            };
+            
+            renderOrdering();
+            
+            controls.innerHTML = `
+                <button id="submit-order" class="btn-primary px-6 py-2 rounded">Submit Order</button>
+            `;
+            
+            controls.querySelector('#submit-order').addEventListener('click', () => {
+                const userOrder = currentOrder.map(item => question.items.indexOf(item));
+                const isCorrect = JSON.stringify(userOrder) === JSON.stringify(question.correctOrder);
+                handleQuizAnswer(isCorrect, question.explanation);
+            });
+        }
+
+        function displayCategorizationQuestion(question, content, controls) {
+            let assignments = new Array(question.items.length).fill(-1);
+            
+            const renderCategorization = () => {
+                content.innerHTML = `
+                    <h3 class="text-xl mb-4">${question.question}</h3>
+                    <p class="text-sm text-gray-400 mb-4">Click on items to move them between categories</p>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        ${question.categories.map((category, i) => 
+                            `<div class="category-zone border-2 border-dashed border-cyan-400 p-4 rounded min-h-32 bg-gray-800">
+                                <h4 class="font-bold mb-2 text-cyan-400">${category}</h4>
+                                <div class="category-items" data-category="${i}">
+                                    ${assignments.map((assignment, itemIndex) => 
+                                        assignment === i ? `<div class="item-chip bg-cyan-600 p-2 m-1 rounded inline-block cursor-pointer hover:bg-cyan-500" data-item="${itemIndex}">${question.items[itemIndex]} ✕</div>` : ''
+                                    ).join('')}
+                                </div>
+                            </div>`
+                        ).join('')}
+                    </div>
+                    <div class="unassigned-items border-2 border-dashed border-gray-600 p-4 rounded bg-gray-800">
+                        <h4 class="font-bold mb-2 text-gray-400">Items to Categorize:</h4>
+                        ${assignments.map((assignment, i) => 
+                            assignment === -1 ? `<div class="item-chip bg-gray-600 p-2 m-1 rounded inline-block cursor-pointer hover:bg-gray-500" data-item="${i}">${question.items[i]} +</div>` : ''
+                        ).join('')}
+                    </div>
+                `;
+                
+                content.querySelectorAll('.item-chip').forEach(chip => {
+                    chip.addEventListener('click', () => {
+                        const itemIndex = parseInt(chip.dataset.item);
+                        const currentCategory = assignments[itemIndex];
+                        
+                        if (currentCategory === -1) {
+                            // Show category selection buttons
+                            showCategorySelection(itemIndex, chip);
+                        } else {
+                            // Move back to unassigned
+                            assignments[itemIndex] = -1;
+                            renderCategorization();
+                        }
+                    });
+                });
+            };
+            
+            const showCategorySelection = (itemIndex, chipElement) => {
+                // Create temporary category selection overlay
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                overlay.innerHTML = `
+                    <div class="bg-gray-800 p-6 rounded-lg border border-cyan-400">
+                        <h4 class="text-lg mb-4">Select category for "${question.items[itemIndex]}":</h4>
+                        ${question.categories.map((category, i) => 
+                            `<button class="category-select block w-full p-3 mb-2 bg-cyan-600 hover:bg-cyan-500 rounded" data-category="${i}">
+                                ${category}
+                            </button>`
+                        ).join('')}
+                        <button class="cancel-select block w-full p-3 bg-gray-600 hover:bg-gray-500 rounded">Cancel</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(overlay);
+                
+                overlay.querySelectorAll('.category-select').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const categoryIndex = parseInt(btn.dataset.category);
+                        assignments[itemIndex] = categoryIndex;
+                        document.body.removeChild(overlay);
+                        renderCategorization();
+                    });
+                });
+                
+                overlay.querySelector('.cancel-select').addEventListener('click', () => {
+                    document.body.removeChild(overlay);
+                });
+            };
+            
+            renderCategorization();
+            
+            controls.innerHTML = `
+                <button id="submit-categories" class="btn-primary px-6 py-2 rounded">Submit Categories</button>
+            `;
+            
+            controls.querySelector('#submit-categories').addEventListener('click', () => {
+                const isCorrect = JSON.stringify(assignments) === JSON.stringify(question.correctCategories);
+                handleQuizAnswer(isCorrect, question.explanation);
+            });
+        }
+
+        function displaySpaceMatchingQuestion(question, content, controls) {
+            let matches = {};
+            let selectedItem = null;
+            
+            const renderMatching = () => {
+                content.innerHTML = `
+                    <h3 class="text-xl mb-4">${question.question}</h3>
+                    <p class="text-sm text-gray-400 mb-4">Click on a phenomenon, then click on its matching description</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-bold mb-2 text-cyan-400">Space Phenomena:</h4>
+                            ${question.pairs.map((pair, i) => 
+                                `<div class="match-item p-3 rounded mb-2 cursor-pointer border-2 transition-all ${
+                                    selectedItem === i 
+                                        ? 'bg-yellow-600 border-yellow-400 transform scale-105' 
+                                        : matches[i] !== undefined 
+                                            ? 'bg-green-600 border-green-400' 
+                                            : 'bg-gray-700 border-gray-600 hover:bg-cyan-600 hover:border-cyan-400'
+                                }" data-item="${i}">
+                                    <div class="flex justify-between items-center">
+                                        <span>${pair.item}</span>
+                                        <span class="text-sm">
+                                            ${selectedItem === i ? '👈 Selected' : matches[i] !== undefined ? '✅ Matched' : '🔘 Click me'}
+                                        </span>
+                                    </div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-2 text-green-400">Descriptions:</h4>
+                            ${question.pairs.map((pair, i) => 
+                                `<div class="match-description p-3 rounded mb-2 cursor-pointer border-2 transition-all ${
+                                    Object.values(matches).includes(i) 
+                                        ? 'bg-green-600 border-green-400' 
+                                        : selectedItem !== null
+                                            ? 'bg-blue-700 border-blue-400 hover:bg-blue-600'
+                                            : 'bg-gray-700 border-gray-600'
+                                }" data-desc="${i}">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm">${pair.description}</span>
+                                        <span class="text-xs">
+                                            ${Object.values(matches).includes(i) ? '✅ Used' : selectedItem !== null ? '👈 Click to match' : '⭕ Waiting'}
+                                        </span>
+                                    </div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-gray-800 rounded border border-cyan-400">
+                        <h4 class="font-bold text-cyan-400 mb-2">Matching Status:</h4>
+                        <p class="text-sm">
+                            Matches completed: ${Object.keys(matches).length} / ${question.pairs.length}<br>
+                            ${selectedItem !== null ? `Selected: ${question.pairs[selectedItem].item}` : "Select a phenomenon to match"}
+                        </p>
+                    </div>
+                `;
+                
+                content.querySelectorAll('.match-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const itemIndex = parseInt(item.dataset.item);
+                        if (matches[itemIndex] === undefined) {
+                            selectedItem = selectedItem === itemIndex ? null : itemIndex;
+                            renderMatching();
+                        }
+                    });
+                });
+                
+                content.querySelectorAll('.match-description').forEach(desc => {
+                    desc.addEventListener('click', () => {
+                        if (selectedItem !== null) {
+                            const descIndex = parseInt(desc.dataset.desc);
+                            if (!Object.values(matches).includes(descIndex)) {
+                                matches[selectedItem] = descIndex;
+                                selectedItem = null;
+                                renderMatching();
+                            }
+                        }
+                    });
+                });
+            };
+            
+            renderMatching();
+            
+            controls.innerHTML = `
+                <button id="submit-matches" class="btn-primary px-6 py-2 rounded">Submit Matches</button>
+                <button id="clear-matches" class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded ml-2">Clear All</button>
+            `;
+            
+            controls.querySelector('#submit-matches').addEventListener('click', () => {
+                let isCorrect = true;
+                for (let i = 0; i < question.pairs.length; i++) {
+                    if (matches[i] !== i) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+                handleQuizAnswer(isCorrect, question.explanation);
+            });
+            
+            controls.querySelector('#clear-matches').addEventListener('click', () => {
+                matches = {};
+                selectedItem = null;
+                renderMatching();
+            });
+        }
+
+        function displayPlanetBuilderQuestion(question, content, controls) {
+            let selectedFeatures = [];
+            
+            const renderPlanetBuilder = () => {
+                content.innerHTML = `
+                    <h3 class="text-xl mb-4">${question.question}</h3>
+                    <p class="text-sm text-gray-400 mb-4">Click on features to select/deselect them for your habitable planet</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        ${question.features.map((feature, i) => {
+                            const isSelected = selectedFeatures.includes(i);
+                            const isGoodFeature = question.correctFeatures.includes(i);
+                            return `<button class="feature-toggle p-4 rounded border-2 transition-all duration-300 ${
+                                isSelected 
+                                    ? 'bg-green-600 border-green-400 text-white transform scale-105' 
+                                    : 'bg-gray-700 border-gray-600 hover:border-cyan-400 hover:bg-gray-600'
+                            }" data-feature="${i}">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-lg">${isSelected ? '✅' : '☐'} ${feature}</span>
+                                    ${isSelected ? '<span class="text-sm">SELECTED</span>' : '<span class="text-sm text-gray-400">CLICK TO SELECT</span>'}
+                                </div>
+                            </button>`
+                        }).join('')}
+                    </div>
+                    <div class="mt-4 p-3 bg-gray-800 rounded border border-cyan-400">
+                        <h4 class="font-bold text-cyan-400 mb-2">Planet Status:</h4>
+                        <p class="text-sm">
+                            Selected features: ${selectedFeatures.length} / ${question.features.length}<br>
+                            ${selectedFeatures.length === 0 
+                                ? "❌ Your planet is barren and lifeless!" 
+                                : selectedFeatures.length < 3
+                                    ? "🤔 Your planet might support some life..."
+                                    : selectedFeatures.length === question.correctFeatures.length && selectedFeatures.every(f => question.correctFeatures.includes(f))
+                                        ? "🌍 Perfect! This planet could support life!"
+                                        : "⚠️ This planet has mixed conditions..."
+                            }
+                        </p>
+                    </div>
+                `;
+                
+                // Update controls every time we re-render
+                controls.innerHTML = `
+                    <button id="submit-planet" class="btn-primary px-8 py-3 rounded text-lg mb-2">🚀 Launch Colony Ship</button>
+                    <p class="text-xs text-gray-400 text-center">Select the features that make a planet habitable for human life</p>
+                    <p class="text-sm text-cyan-400 text-center mt-2">Selected: ${selectedFeatures.length} features</p>
+                `;
+                
+                // Re-add the submit button event listener
+                const submitBtn = controls.querySelector('#submit-planet');
+                if (submitBtn) {
+                    submitBtn.addEventListener('click', () => {
+                        selectedFeatures.sort();
+                        const correctSorted = [...question.correctFeatures].sort();
+                        const isCorrect = JSON.stringify(selectedFeatures) === JSON.stringify(correctSorted);
+                        handleQuizAnswer(isCorrect, question.explanation);
+                    });
+                }
+                
+                content.querySelectorAll('.feature-toggle').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const featureIndex = parseInt(btn.dataset.feature);
+                        if (selectedFeatures.includes(featureIndex)) {
+                            selectedFeatures = selectedFeatures.filter(f => f !== featureIndex);
+                        } else {
+                            selectedFeatures.push(featureIndex);
+                        }
+                        renderPlanetBuilder();
+                    });
+                });
+            };
+            
+            renderPlanetBuilder();
+        }
+
+        function handleQuizAnswer(isCorrect, explanation) {
+            if (isCorrect) {
+                quizScore++;
+                playSound('correct');
+            } else {
+                playSound('incorrect');
+            }
+            
+            // Show explanation
+            const quizContent = document.getElementById('quiz-content');
+            quizContent.innerHTML = `
+                <div class="text-center">
+                    <div class="text-4xl mb-4">${isCorrect ? '✅ Correct!' : '❌ Incorrect'}</div>
+                    <p class="text-lg mb-6">${explanation}</p>
+                    <button id="next-question" class="btn-primary px-6 py-2 rounded">
+                        ${currentQuizIndex >= shuffledQuizQuestions.length - 1 ? 'Complete Quiz' : 'Next Question'}
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('next-question').addEventListener('click', () => {
+                currentQuizIndex++;
+                if (currentQuizIndex >= shuffledQuizQuestions.length) {
+                    completeSpaceshipQuiz();
+                } else {
+                    displayCurrentQuestion();
+                }
+            });
+        }
+
+        function completeSpaceshipQuiz() {
+            celestialBodies.spaceship.isComplete = true;
+            const percentage = Math.round((quizScore / shuffledQuizQuestions.length) * 100);
+            
+            if (percentage >= 70) {
+                score += 500; // Huge bonus for completing final quiz
+                endGame(true, `Outstanding work, Agent! You've mastered the cosmos with ${percentage}% accuracy. The lost data has been recovered and humanity's knowledge of the universe is complete!`);
+            } else {
+                endGame(false, `Mission incomplete. You scored ${percentage}%, but 70% is required to unlock the final data. The cosmos still holds its secrets...`);
+            }
+        }
+
         startBtn.addEventListener('click', () => { screens.start.classList.add('hidden'); startGame(); });
         restartBtn.addEventListener('click', () => { switchScreen('start'); bootUpAnimation(); });
         soundToggle.addEventListener('click', toggleSound);
@@ -678,10 +2980,15 @@
                 const planetKey = p.dataset.planet;
                 if (celestialBodies[planetKey] && !celestialBodies[planetKey].isComplete) {
                     if (planetKey === 'mercury') launchMercuryMinigame();
+                    if (planetKey === 'venus') launchVenusMinigame();
+                    if (planetKey === 'earth') launchEarthMinigame();
                     if (planetKey === 'mars') launchMarsMinigame();
                     if (planetKey === 'jupiter') launchJupiterMinigame();
                     if (planetKey === 'saturn') launchSaturnMinigame();
+                    if (planetKey === 'uranus') launchUranusMinigame();
+                    if (planetKey === 'neptune') launchNeptuneMinigame();
                     if (planetKey === 'sun' && document.getElementById('map-sun-interactive').classList.contains('unlocked')) launchSunMinigame();
+                    if (planetKey === 'spaceship' && document.getElementById('map-spaceship').style.display !== 'none') launchSpaceshipQuiz();
                 }
             });
         });
